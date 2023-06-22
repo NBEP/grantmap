@@ -1,0 +1,119 @@
+#  TITLE: mod_map.R
+#  DESCRIPTION: Module to create sidebar, filter data
+#  AUTHOR(S): Mariel Sorlien
+#  DATE LAST UPDATED: 2023-06-22
+#  GIT REPO: NBEP/grantmap
+#  R version 4.2.3 (2023-03-15 ucrt)  x86_64
+
+library(shinyWidgets)
+
+# UI --------------------------------------------------------------------------
+
+sidebar_ui <- function(id) {
+  
+  ns <- NS(id)
+  
+  # Define variables ----
+  list_category <- c('Capacity-Building', 'Education', 'Implementation', 
+                       'Monitoring', 'Outreach', 'Planning', 'Research', 
+                       'Restoration')
+  
+  list_year <- unique(c(df_projects$START_YEAR, df_projects$END_YEAR))
+  list_year <- list_year[!is.na(list_year)]
+  
+  # UI ----
+  tagList(
+    # Select Status ----
+    checkboxGroupInput(
+      ns('status'),
+      label = h2('Status'),
+      choices = c('Ongoing', 'Complete'),
+      selected = c('Ongoing', 'Complete')
+      ),
+    # Select Organization ----
+    pickerInput(
+      ns('org'),
+      label = h2('Organization'),
+      choices = list_org,
+      selected = list_org,
+      options = list(
+        `actions-box` = TRUE,
+        `live-search` = TRUE,
+        `selected-text-format` = 'count > 3'),
+      multiple = TRUE
+    ),
+    # Select category ----
+    pickerInput(
+      ns('category'),
+      label = h2('Category'),
+      choices = list_category,
+      selected = list_category,
+      options = list(
+        `actions-box` = TRUE,
+        `live-search` = TRUE,
+        `selected-text-format` = 'count > 3'),
+      multiple = TRUE
+    ),
+    # Select Funding Source ----
+    pickerInput(
+      ns('funding'),
+      label = h2('Funding Source'),
+      choices = c(list_funding, 'Other'=''),
+      selected = c(list_funding, ''),
+      options = list(
+        `actions-box` = TRUE,
+        `live-search` = TRUE),
+      multiple = TRUE
+    ),
+    # Select year ----
+    sliderInput(
+      ns('year'), 
+      label = h2('Year'), 
+      min = min(list_year),
+      max = max(list_year),
+      value = c(min(list_year), max(list_year))
+    )
+  )
+  
+}
+
+# Server ----------------------------------------------------------------------
+
+sidebar_server <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    
+    ns <- NS(id)
+    
+    # Filter data ----
+    df_filter <- reactive({
+      req(input$status)
+      req(input$org)
+      req(input$category)
+      req(input$funding)
+      req(input$year)
+      
+      df_filter <- df_projects %>%
+        filter(
+          STATUS %in% input$status,
+          CONTRACTOR %in% input$org,
+          CATEGORY %in% input$category,
+          FUNDING_SOURCE %in% input$funding,
+          START_YEAR >= input$year[1] |
+            END_YEAR >= input$year[1],
+          START_YEAR <= input$year[2] |
+            END_YEAR <= input$year[2]
+      )
+      
+      return(df_filter)
+      
+    })
+    
+    # Output reactive values ----
+    return(
+      reactive({ df_filter() })
+    )
+    
+  })
+}
+
+# end Server Function

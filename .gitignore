@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data-raw/STUDYAREAS_NBEP2017.cpg
+data-raw/STUDYAREAS_NBEP2017.dbf
+data-raw/STUDYAREAS_NBEP2017.prj
+data-raw/STUDYAREAS_NBEP2017.shp
+data-raw/STUDYAREAS_NBEP2017.shx
+data-raw/STUDYAREAS_NBEP2017.xml
