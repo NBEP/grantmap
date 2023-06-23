@@ -35,15 +35,15 @@ map_server <- function(id, df_filter) {
     ns <- NS(id)
     
     # Icons ----
-    icon_color <- c('#55C7F6','#05C6AE', '#AF0000', '#E8661F', '#FFBDD4',
-                    '#0077BB', '#FFFFFF', '#FFFFFF')
+    icon_color <- c('#4E0398', '#AF0000', '#0077BB', '#E8661F', '#FFBDD4',
+                    '#55C7F6','#FFFF8D', '#05C6AE')
     
-    icon_shape <- c('circle', 'rect', 'triangle', 'diamond', 'polygon', 'cross',
-                    'plus', 'star')
+    icon_shape <- c('star', 'plus', 'triangle', 'diamond', 'cross', 'circle',
+                    'rect', 'polygon')
     
-    icon_names <- c('Planning', 'Restoration', 'Monitoring', 'Education',
-                    'Research', 'Implementation', 'Capacity-Building', 
-                    'Outreach')
+    icon_names <- c('Capacity-Building', 'Education', 'Implementation', 
+                    'Monitoring', 'Outreach', 'Planning', 'Research', 
+                    'Restoration')
     
     icon_symbols <- setNames(Map(f = makeSymbol,
                                  shape = icon_shape,
@@ -64,11 +64,18 @@ map_server <- function(id, df_filter) {
                   42.43180084 # Lat max
                 ) %>%
         # * Add basemap tiles ----
-        addProviderTiles(providers$CartoDB.Positron, group = 'Map') %>%
-        addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') %>%
+        addProviderTiles(
+          providers$CartoDB.Positron, 
+          group = 'Light Map') %>%
+        addProviderTiles(
+          providers$CartoDB.DarkMatter, 
+          group = 'Dark Map') %>%
+        addProviderTiles(
+          providers$Esri.WorldImagery, 
+          group = 'Satellite') %>%
         # * Add layer toggle ----
         addLayersControl(
-          baseGroups = c('Map', 'Satellite'),
+          baseGroups = c('Light Map', 'Dark Map', 'Satellite'),
           overlayGroups = c('NBEP Study Area'),
           position='topleft'
         ) %>%
@@ -100,7 +107,7 @@ map_server <- function(id, df_filter) {
           fillOpacity = 0.4,
           fillColor = '#9adbe8',
           # Group
-          group = 'NBEP Study Areas'
+          group = 'NBEP Study Area'
           )
       
       })
@@ -108,8 +115,14 @@ map_server <- function(id, df_filter) {
     # Add sites ----
     observe({
       leafletProxy("map") %>%
+        # Clear points
         clearMarkers() %>%
-        
+        # Add spinner
+        leaflet.extras2::startSpinner(
+          list('length' = 0, 'lines' = 8, 'width' = 20, 'radius' = 40,
+               'color' = '#0275D8')
+          ) %>%
+        # Add points 
         addMarkers(
           data = df_filter(),
           lng = ~LONGITUDE,
@@ -130,7 +143,9 @@ map_server <- function(id, df_filter) {
           # Accessibility
           options = markerOptions(
             alt = ~paste0(CATEGORY, ', ', PROJECT_TITLE))
-        )
+        ) %>%
+        # Stop spinner
+        leaflet.extras2::stopSpinner()
     })
     
   })

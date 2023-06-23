@@ -18,7 +18,10 @@ grantmap <- function(...){
   
   ui <- page_sidebar(
     title = 'NBEP Funded Projects',
-    sidebar = sidebar_ui('sidebar'),
+    sidebar = sidebar(
+      width = 250,
+      sidebar_ui('sidebar')
+      ),
     
     use_tota11y(),
     

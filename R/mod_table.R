@@ -33,7 +33,8 @@ table_server <- function(id, df_filter) {
     project_table <- reactive({
       df_filter() %>%
         select(!c(PROJECT_DESCRIPTION, LATITUDE, LONGITUDE)) %>%
-        rename_with(~ str_to_title(gsub("_", " ", .x, fixed = TRUE)))
+        rename_with(~ str_to_title(gsub("_", " ", .x, fixed = TRUE))) %>%
+        rename(Organization = Contractor)
     })
     
     output$table <- renderReactable({

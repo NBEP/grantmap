@@ -15,8 +15,8 @@ sidebar_ui <- function(id) {
   
   # Define variables ----
   list_category <- c('Capacity-Building', 'Education', 'Implementation', 
-                       'Monitoring', 'Outreach', 'Planning', 'Research', 
-                       'Restoration')
+                     'Monitoring', 'Outreach', 'Planning', 'Research', 
+                     'Restoration')
   
   list_year <- unique(c(df_projects$START_YEAR, df_projects$END_YEAR))
   list_year <- list_year[!is.na(list_year)]
@@ -58,7 +58,7 @@ sidebar_ui <- function(id) {
     pickerInput(
       ns('funding'),
       label = h2('Funding Source'),
-      choices = c(list_funding, 'Other'=''),
+      choices = c(list_funding, 'Other' = ''),
       selected = c(list_funding, ''),
       options = list(
         `actions-box` = TRUE,
@@ -71,7 +71,9 @@ sidebar_ui <- function(id) {
       label = h2('Year'), 
       min = min(list_year),
       max = max(list_year),
-      value = c(min(list_year), max(list_year))
+      value = c(min(list_year), max(list_year)),
+      sep = '',  # Seperator between thousands places in numbers 
+      step = 1  # Interval between numbers
     )
   )
   

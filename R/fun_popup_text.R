@@ -18,7 +18,7 @@ project_popup <- function(
   
   popup_footer <- paste0(
     '<br/><br/><b><i>Status: </i></b>', STATUS,
-    '<br/><b><i>Cost: $</i></b>', PROJECT_COST,
+    '<br/><b><i>Cost: </i></b>$', PROJECT_COST,
     '<br/><b><i>Funding Source: </i></b>', FUNDING_SOURCE,
     '<br/><br/><b><i>Description</i></b>: ', PROJECT_DESCRIPTION)
   
