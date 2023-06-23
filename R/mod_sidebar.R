@@ -1,11 +1,11 @@
 #  TITLE: mod_map.R
 #  DESCRIPTION: Module to create sidebar, filter data
 #  AUTHOR(S): Mariel Sorlien
-#  DATE LAST UPDATED: 2023-06-22
+#  DATE LAST UPDATED: 2023-06-23
 #  GIT REPO: NBEP/grantmap
 #  R version 4.2.3 (2023-03-15 ucrt)  x86_64
 
-library(shinyWidgets)
+library(dplyr)
 
 # UI --------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ sidebar_ui <- function(id) {
       selected = c('Ongoing', 'Complete')
       ),
     # Select Organization ----
-    pickerInput(
+    shinyWidgets::pickerInput(
       ns('org'),
       label = h2('Organization'),
       choices = list_org,
@@ -48,7 +48,7 @@ sidebar_ui <- function(id) {
         content = list_org_wrap)
     ),
     # Select category ----
-    pickerInput(
+    shinyWidgets::pickerInput(
       ns('category'),
       label = h2('Category'),
       choices = list_category,
@@ -60,7 +60,7 @@ sidebar_ui <- function(id) {
       multiple = TRUE
     ),
     # Select Funding Source ----
-    pickerInput(
+    shinyWidgets::pickerInput(
       ns('funding'),
       label = h2('Funding Source'),
       choices = c(list_funding, 'Other' = ''),

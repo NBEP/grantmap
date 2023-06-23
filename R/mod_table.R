@@ -1,11 +1,11 @@
 #  TITLE: mod_table.R
 #  DESCRIPTION: Module to display table of grant locations
 #  AUTHOR(S): Mariel Sorlien
-#  DATE LAST UPDATED: 2023-06-22
+#  DATE LAST UPDATED: 2023-06-23
 #  GIT REPO: NBEP/grantmap
 #  R version 4.2.3 (2023-03-15 ucrt)  x86_64
 
-library(reactable)
+library(dplyr)
 
 # UI --------------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ table_ui <- function(id) {
   tagList(
     # Reactable ----
     shinycssloaders::withSpinner(
-      reactableOutput(ns('table')),
+      reactable::reactableOutput(ns('table')),
       type = 5
     )
   )
@@ -33,12 +33,12 @@ table_server <- function(id, df_filter) {
     project_table <- reactive({
       df_filter() %>%
         select(!c(PROJECT_DESCRIPTION, LATITUDE, LONGITUDE)) %>%
-        rename_with(~ str_to_title(gsub("_", " ", .x, fixed = TRUE))) %>%
+        rename_with(~ stringr::str_to_title(gsub("_", " ", .x, fixed = TRUE))) %>%
         rename(Organization = Contractor)
     })
     
-    output$table <- renderReactable({
-      reactable(project_table())
+    output$table <- reactable::renderReactable({
+      reactable::reactable(project_table())
     })
     
   })

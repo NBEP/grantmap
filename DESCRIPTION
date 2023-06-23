@@ -13,7 +13,6 @@ Depends:
 LazyData: true
 Imports: 
     bslib,
-    crosstalk,
     dplyr,
     leaflegend,
     leaflet,
@@ -25,4 +24,5 @@ Imports:
     shinya11y,
     shinycssloaders,
     shinyWidgets,
+    stringr,
     tidyr

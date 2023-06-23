@@ -1,15 +1,11 @@
 #  TITLE: mod_map.R
 #  DESCRIPTION: Module to display map of grant locations
 #  AUTHOR(S): Mariel Sorlien
-#  DATE LAST UPDATED: 2023-06-22
+#  DATE LAST UPDATED: 2023-06-23
 #  GIT REPO: NBEP/grantmap
 #  R version 4.2.3 (2023-03-15 ucrt)  x86_64
 
-library(sf)
-library(leaflet)
-library(leaflet.extras2)
-library(leaflegend)
-library(shinycssloaders)
+library(dplyr)
 
 # UI --------------------------------------------------------------------------
 
@@ -20,7 +16,7 @@ map_ui <- function(id) {
   tagList(
     # Leaflet -----
     shinycssloaders::withSpinner(
-      leafletOutput(ns('map'), height = '70vh'),
+      leaflet::leafletOutput(ns('map'), height = '70vh'),
       type = 5
       )
     )
@@ -45,7 +41,7 @@ map_server <- function(id, df_filter) {
                     'Monitoring', 'Outreach', 'Planning', 'Research', 
                     'Restoration')
     
-    icon_symbols <- setNames(Map(f = makeSymbol,
+    icon_symbols <- setNames(Map(f = leaflegend::makeSymbol,
                                  shape = icon_shape,
                                  fillColor= icon_color, color = 'black',
                                  fillOpacity = 1, opacity = 1,
@@ -55,47 +51,48 @@ map_server <- function(id, df_filter) {
                              nm=icon_names)
     
     # Leaflet basemap ----
-    output$map <- renderLeaflet({
-      leaflet() %>%
+    output$map <- leaflet::renderLeaflet({
+      leaflet::leaflet() %>%
         # * Set map dimensions ----
-        fitBounds(-71.9937973, # Lon min
+      leaflet::fitBounds(-71.9937973, # Lon min
                   41.29999924, # Lat min
                   -70.5164032, # Lon max
                   42.43180084 # Lat max
                 ) %>%
         # * Add basemap tiles ----
-        addProviderTiles(
-          providers$CartoDB.Positron, 
+        leaflet::addProviderTiles(
+          leaflet::providers$CartoDB.Positron, 
           group = 'Light Map') %>%
-        addProviderTiles(
-          providers$CartoDB.DarkMatter, 
+        leaflet::addProviderTiles(
+          leaflet::providers$CartoDB.DarkMatter, 
           group = 'Dark Map') %>%
-        addProviderTiles(
-          providers$Esri.WorldImagery, 
+        leaflet::addProviderTiles(
+          leaflet::providers$Esri.WorldImagery, 
           group = 'Satellite') %>%
         # * Add layer toggle ----
-        addLayersControl(
+        leaflet::addLayersControl(
           baseGroups = c('Light Map', 'Dark Map', 'Satellite'),
-          overlayGroups = c('NBEP Study Area'),
+          overlayGroups = c('NBEP Study Area', 'Legend'),
           position='topleft'
         ) %>%
         # * Add legend ----
-        addLegendImage(
+        leaflegend::addLegendImage(
           images = icon_symbols,
           labels = icon_names,
           width = 20,
           height = 20,
           orientation = 'vertical',
           title = htmltools::tags$div('Category',
-                                    style = 'font-size: 18px'),
+                                      style = 'font-size: 18px'),
           labelStyle = 'font-size: 18px;',
-          position = 'topright'
+          position = 'topright',
+          group = 'Legend'
           ) %>%
         # * Add spinner ----
         leaflet.extras2::addSpinner() %>%
         # * Add scale bar ----
-        addScaleBar(position='bottomleft') %>%
-        addPolygons(
+        leaflet::addScaleBar(position='bottomleft') %>%
+        leaflet::addPolygons(
           data = shp_nbep,
           layerId = shp_nbep,
           # Stroke
@@ -114,34 +111,34 @@ map_server <- function(id, df_filter) {
     
     # Add sites ----
     observe({
-      leafletProxy("map") %>%
+      leaflet::leafletProxy("map") %>%
         # Clear points
-        clearMarkers() %>%
+        leaflet::clearMarkers() %>%
         # Add spinner
         leaflet.extras2::startSpinner(
           list('length' = 0, 'lines' = 8, 'width' = 20, 'radius' = 40,
                'color' = '#0275D8')
           ) %>%
         # Add points 
-        addMarkers(
+        leaflet::addMarkers(
           data = df_filter(),
           lng = ~LONGITUDE,
           lat = ~LATITUDE,
           # Symbology
-          icon = ~icons(
+          icon = ~leaflet::icons(
             iconUrl = icon_symbols[CATEGORY],
             iconWidth = 20,
             iconHeight = 20),
           # Label
           label = ~PROJECT_TITLE,
-          labelOptions = labelOptions(textsize = "15px"),
+          labelOptions = leaflet::labelOptions(textsize = "15px"),
           # Popup
           popup = ~project_popup(
             PROJECT_TITLE, START_YEAR, END_YEAR, CONTRACTOR, REPORT, STATUS, 
             PROJECT_COST, FUNDING_SOURCE, PROJECT_DESCRIPTION
             ),
           # Accessibility
-          options = markerOptions(
+          options = leaflet::markerOptions(
             alt = ~paste0(CATEGORY, ', ', PROJECT_TITLE))
         ) %>%
         # Stop spinner
