@@ -21,6 +21,9 @@ sidebar_ui <- function(id) {
   list_year <- unique(c(df_projects$START_YEAR, df_projects$END_YEAR))
   list_year <- list_year[!is.na(list_year)]
   
+  list_org_wrap <- stringr::str_wrap(list_org, width = 20)
+  list_org_wrap <- stringr::str_replace_all(list_org_wrap, "\\n", "<br>")
+  
   # UI ----
   tagList(
     # Select Status ----
@@ -40,7 +43,9 @@ sidebar_ui <- function(id) {
         `actions-box` = TRUE,
         `live-search` = TRUE,
         `selected-text-format` = 'count > 3'),
-      multiple = TRUE
+      multiple = TRUE,
+      choicesOpt = list(
+        content = list_org_wrap)
     ),
     # Select category ----
     pickerInput(
