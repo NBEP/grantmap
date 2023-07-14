@@ -28,12 +28,11 @@ table_ui <- function(id) {
 table_server <- function(id, df_filter) {
   moduleServer(id, function(input, output, session) {
     
-    ns <- NS(id)
-    
     project_table <- reactive({
       df_filter() %>%
         select(!c(PROJECT_DESCRIPTION, LATITUDE, LONGITUDE)) %>%
-        rename_with(~ stringr::str_to_title(gsub("_", " ", .x, fixed = TRUE))) %>%
+        rename_with(
+          ~ stringr::str_to_title(gsub("_", " ", .x, fixed = TRUE))) %>%
         rename(Organization = Contractor)
     })
     

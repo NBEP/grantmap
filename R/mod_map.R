@@ -28,8 +28,6 @@ map_ui <- function(id) {
 map_server <- function(id, df_filter) {
   moduleServer(id, function(input, output, session) {
     
-    ns <- NS(id)
-    
     # Icons ----
     icon_color <- c('#4E0398', '#AF0000', '#0077BB', '#E8661F', '#FFBDD4',
                     '#55C7F6','#FFFF8D', '#05C6AE')

@@ -21,7 +21,7 @@ sidebar_ui <- function(id) {
   list_year <- unique(c(df_projects$START_YEAR, df_projects$END_YEAR))
   list_year <- list_year[!is.na(list_year)]
   
-  list_org_wrap <- stringr::str_wrap(list_org, width = 20)
+  list_org_wrap <- stringr::str_wrap(list_org, width = 40)
   list_org_wrap <- stringr::str_replace_all(list_org_wrap, "\\n", "<br>")
   
   # UI ----
@@ -42,7 +42,8 @@ sidebar_ui <- function(id) {
       options = list(
         `actions-box` = TRUE,
         `live-search` = TRUE,
-        `selected-text-format` = 'count > 3'),
+        `selected-text-format` = 'count > 3',
+        container = 'body'),
       multiple = TRUE,
       choicesOpt = list(
         content = list_org_wrap)
@@ -56,7 +57,8 @@ sidebar_ui <- function(id) {
       options = list(
         `actions-box` = TRUE,
         `live-search` = TRUE,
-        `selected-text-format` = 'count > 3'),
+        `selected-text-format` = 'count > 3',
+        container = 'body'),
       multiple = TRUE
     ),
     # Select Funding Source ----
@@ -67,7 +69,8 @@ sidebar_ui <- function(id) {
       selected = c(list_funding, ''),
       options = list(
         `actions-box` = TRUE,
-        `live-search` = TRUE),
+        `live-search` = TRUE,
+        container = 'body'),
       multiple = TRUE
     ),
     # Select year ----
@@ -77,7 +80,7 @@ sidebar_ui <- function(id) {
       min = min(list_year),
       max = max(list_year),
       value = c(min(list_year), max(list_year)),
-      sep = '',  # Seperator between thousands places in numbers 
+      sep = '',  # Separator between thousands places in numbers 
       step = 1  # Interval between numbers
     )
   )
@@ -88,8 +91,6 @@ sidebar_ui <- function(id) {
 
 sidebar_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    
-    ns <- NS(id)
     
     # Filter data ----
     df_filter <- reactive({

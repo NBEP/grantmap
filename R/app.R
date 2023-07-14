@@ -5,6 +5,8 @@
 #  GIT REPO: NBEP/grantmap
 #  R version 4.2.3 (2023-03-15 ucrt)  x86_64
 
+library(shiny)
+
 grantmap <- function(...){
   
   # ui ------------------------------------------------------------------------
