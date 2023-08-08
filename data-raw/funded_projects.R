@@ -1,8 +1,8 @@
 #  TITLE: funded_projects.R
 #  DESCRIPTION: Imports table of Funded projects
 #  AUTHOR(S): Mariel Sorlien
-#  DATE LAST UPDATED: 2023-06-22
-#  GIT REPO:
+#  DATE LAST UPDATED: 2023-08-08
+#  GIT REPO: NBEP/grantmap
 #  R version 4.2.3 (2023-03-15 ucrt) x86_64
 # -----------------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ library(tidyverse)
 
 df_projects <- read.csv('data-raw/funded_projects.csv') %>%
   mutate(across(where(is.numeric), ~na_if(., -999999))) %>%
-  select(-c(EJ_PROJECT, EJ_REASON))
+  select(-c(EJ_PROJECT, EJ_YEAR))
 
 usethis::use_data(df_projects, overwrite = TRUE)
 
