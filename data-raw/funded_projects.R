@@ -12,7 +12,7 @@ library(tidyverse)
 
 df_projects <- read.csv('data-raw/funded_projects.csv') %>%
   mutate(across(where(is.numeric), ~na_if(., -999999))) %>%
-  select(-c(EJ_PROJECT, EJ_YEAR))
+  select(-c(EJ_PROJECT, EJ_REASON))
 
 usethis::use_data(df_projects, overwrite = TRUE)
 

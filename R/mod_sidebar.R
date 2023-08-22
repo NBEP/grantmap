@@ -18,7 +18,7 @@ sidebar_ui <- function(id) {
                      'Monitoring', 'Outreach', 'Planning', 'Research', 
                      'Restoration')
   
-  list_year <- unique(c(df_projects$START_YEAR, df_projects$END_YEAR))
+  list_year <- sort(unique(df_projects$START_YEAR), decreasing = TRUE)
   list_year <- list_year[!is.na(list_year)]
   
   list_org_wrap <- stringr::str_wrap(list_org, width = 40)
@@ -74,14 +74,17 @@ sidebar_ui <- function(id) {
       multiple = TRUE
     ),
     # Select year ----
-    sliderInput(
-      ns('year'), 
-      label = h2('Year'), 
-      min = min(list_year),
-      max = max(list_year),
-      value = c(min(list_year), max(list_year)),
-      sep = '',  # Separator between thousands places in numbers 
-      step = 1  # Interval between numbers
+    shinyWidgets::pickerInput(
+      ns('year'),
+      label = h2('Funding Year'),
+      choices = list_year,
+      selected = list_year,
+      options = list(
+        `actions-box` = TRUE,
+        `live-search` = TRUE,
+        `selected-text-format` = 'count > 3',
+        container = 'body'),
+      multiple = TRUE
     )
   )
   
@@ -106,10 +109,7 @@ sidebar_server <- function(id) {
           CONTRACTOR %in% input$org,
           CATEGORY %in% input$category,
           FUNDING_SOURCE %in% input$funding,
-          START_YEAR >= input$year[1] |
-            END_YEAR >= input$year[1],
-          START_YEAR <= input$year[2] |
-            END_YEAR <= input$year[2]
+          START_YEAR %in% input$year
       )
       
       return(df_filter)

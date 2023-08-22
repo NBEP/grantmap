@@ -1,7 +1,7 @@
 #  TITLE: mod_map.R
 #  DESCRIPTION: Module to display map of grant locations
 #  AUTHOR(S): Mariel Sorlien
-#  DATE LAST UPDATED: 2023-06-23
+#  DATE LAST UPDATED: 2023-08-22
 #  GIT REPO: NBEP/grantmap
 #  R version 4.2.3 (2023-03-15 ucrt)  x86_64
 
@@ -60,16 +60,16 @@ map_server <- function(id, df_filter) {
         # * Add basemap tiles ----
         leaflet::addProviderTiles(
           leaflet::providers$CartoDB.Positron, 
-          group = 'Light Map') %>%
+          group = 'Light Basemap') %>%
         leaflet::addProviderTiles(
           leaflet::providers$CartoDB.DarkMatter, 
-          group = 'Dark Map') %>%
+          group = 'Dark Basemap') %>%
         leaflet::addProviderTiles(
           leaflet::providers$Esri.WorldImagery, 
-          group = 'Satellite') %>%
+          group = 'Satellite View') %>%
         # * Add layer toggle ----
         leaflet::addLayersControl(
-          baseGroups = c('Light Map', 'Dark Map', 'Satellite'),
+          baseGroups = c('Light Basemap', 'Dark Basemap', 'Satellite View'),
           overlayGroups = c('NBEP Study Area', 'Legend'),
           position='topleft'
         ) %>%
@@ -112,35 +112,41 @@ map_server <- function(id, df_filter) {
       leaflet::leafletProxy("map") %>%
         # Clear points
         leaflet::clearMarkers() %>%
-        # Add spinner
-        leaflet.extras2::startSpinner(
-          list('length' = 0, 'lines' = 8, 'width' = 20, 'radius' = 40,
-               'color' = '#0275D8')
+        leaflet::clearMarkerClusters()
+      
+      if (nrow(df_filter()) > 0 ){
+        leaflet::leafletProxy("map") %>%
+          # Add spinner
+          leaflet.extras2::startSpinner(
+            list('length' = 0, 'lines' = 8, 'width' = 20, 'radius' = 40,
+                 'color' = '#0275D8')
           ) %>%
-        # Add points 
-        leaflet::addMarkers(
-          data = df_filter(),
-          lng = ~LONGITUDE,
-          lat = ~LATITUDE,
-          # Symbology
-          icon = ~leaflet::icons(
-            iconUrl = icon_symbols[CATEGORY],
-            iconWidth = 20,
-            iconHeight = 20),
-          # Label
-          label = ~PROJECT_TITLE,
-          labelOptions = leaflet::labelOptions(textsize = "15px"),
-          # Popup
-          popup = ~project_popup(
-            PROJECT_TITLE, START_YEAR, END_YEAR, CONTRACTOR, REPORT, STATUS, 
-            PROJECT_COST, FUNDING_SOURCE, PROJECT_DESCRIPTION
+          # Add points 
+          leaflet::addMarkers(
+            data = df_filter(),
+            lng = ~LONGITUDE,
+            lat = ~LATITUDE,
+            clusterOptions = leaflet::markerClusterOptions(),
+            # Symbology
+            icon = ~leaflet::icons(
+              iconUrl = icon_symbols[CATEGORY],
+              iconWidth = 20,
+              iconHeight = 20),
+            # Label
+            label = ~PROJECT_TITLE,
+            labelOptions = leaflet::labelOptions(textsize = "15px"),
+            # Popup
+            popup = ~project_popup(
+              PROJECT_TITLE, START_YEAR, END_YEAR, CONTRACTOR, REPORT, STATUS, 
+              PROJECT_COST, FUNDING_SOURCE, PROJECT_DESCRIPTION
             ),
-          # Accessibility
-          options = leaflet::markerOptions(
-            alt = ~paste0(CATEGORY, ', ', PROJECT_TITLE))
-        ) %>%
-        # Stop spinner
-        leaflet.extras2::stopSpinner()
+            # Accessibility
+            options = leaflet::markerOptions(
+              alt = ~paste0(CATEGORY, ', ', PROJECT_TITLE))
+          ) %>%
+          # Stop spinner
+          leaflet.extras2::stopSpinner() 
+      }
     })
     
   })
