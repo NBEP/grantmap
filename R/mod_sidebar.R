@@ -1,16 +1,13 @@
-#  TITLE: mod_map.R
-#  DESCRIPTION: Module to create sidebar, filter data
-#  AUTHOR(S): Mariel Sorlien
-#  DATE LAST UPDATED: 2023-06-23
-#  GIT REPO: NBEP/grantmap
-#  R version 4.2.3 (2023-03-15 ucrt)  x86_64
-
-library(dplyr)
-
-# UI --------------------------------------------------------------------------
-
+#' sidebar UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd
+#'
+#' @importFrom shiny NS tagList
 sidebar_ui <- function(id) {
-  
   ns <- NS(id)
   
   # Define variables ----
@@ -90,8 +87,9 @@ sidebar_ui <- function(id) {
   
 }
 
-# Server ----------------------------------------------------------------------
-
+#' sidebar Server Functions
+#'
+#' @noRd
 sidebar_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
@@ -103,12 +101,15 @@ sidebar_server <- function(id) {
       req(input$funding)
       req(input$year)
       
+      fun_source <- input$funding
+      if ('' %in% fun_source) { fun_source <- c(fun_source, NA) }
+      
       df_filter <- df_projects %>%
-        filter(
+        dplyr::filter(
           STATUS %in% input$status,
-          CONTRACTOR %in% input$org,
+          ORGANIZATION %in% input$org,
           CATEGORY %in% input$category,
-          FUNDING_SOURCE %in% input$funding,
+          FUNDING_SOURCE %in% fun_source,
           START_YEAR %in% input$year
       )
       

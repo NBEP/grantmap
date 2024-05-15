@@ -1,30 +1,31 @@
-#  TITLE: mod_map.R
-#  DESCRIPTION: Module to display map of grant locations
-#  AUTHOR(S): Mariel Sorlien
-#  DATE LAST UPDATED: 2023-08-22
-#  GIT REPO: NBEP/grantmap
-#  R version 4.2.3 (2023-03-15 ucrt)  x86_64
-
-library(dplyr)
-
-# UI --------------------------------------------------------------------------
+#' map UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd
+#'
+#' @importFrom shiny NS tagList
 
 map_ui <- function(id) {
-  
   ns <- NS(id)
   
   tagList(
-    # Leaflet -----
-    shinycssloaders::withSpinner(
-      leaflet::leafletOutput(ns('map'), height = '70vh'),
-      type = 5
-      )
-    )
-  
+    leaflet::leafletOutput(ns('map')) %>%
+      shinycssloaders::withSpinner(type = 5) %>%
+      (\(x) {
+        x[[4]] <- x[[4]] %>% bslib::as_fill_carrier() 
+        x
+      })()
+    # Code from monsterrat
+    # https://stackoverflow.com/questions/77184183/how-to-use-shinycssloaders-withspinner-with-a-plot-output-in-a-bslib-card
+  )
 }
 
-# Server ----------------------------------------------------------------------
-
+#' map Server Functions
+#'
+#' @noRd
 map_server <- function(id, df_filter) {
   moduleServer(id, function(input, output, session) {
     
@@ -71,8 +72,7 @@ map_server <- function(id, df_filter) {
         leaflet::addLayersControl(
           baseGroups = c('Light Basemap', 'Dark Basemap', 'Satellite View'),
           overlayGroups = c('NBEP Study Area', 'Legend'),
-          position='topleft'
-        ) %>%
+          position='topleft') %>%
         # * Add legend ----
         leaflegend::addLegendImage(
           images = icon_symbols,
@@ -84,8 +84,7 @@ map_server <- function(id, df_filter) {
                                       style = 'font-size: 18px'),
           labelStyle = 'font-size: 18px;',
           position = 'topright',
-          group = 'Legend'
-          ) %>%
+          group = 'Legend') %>%
         # * Add spinner ----
         leaflet.extras2::addSpinner() %>%
         # * Add scale bar ----
@@ -136,10 +135,7 @@ map_server <- function(id, df_filter) {
             label = ~PROJECT_TITLE,
             labelOptions = leaflet::labelOptions(textsize = "15px"),
             # Popup
-            popup = ~project_popup(
-              PROJECT_TITLE, START_YEAR, END_YEAR, CONTRACTOR, REPORT, STATUS, 
-              PROJECT_COST, FUNDING_SOURCE, PROJECT_DESCRIPTION
-            ),
+            popup = ~POPUP_TEXT,
             # Accessibility
             options = leaflet::markerOptions(
               alt = ~paste0(CATEGORY, ', ', PROJECT_TITLE))

@@ -1,11 +1,10 @@
-#  TITLE: app.R
-#  DESCRIPTION: R shiny app for map of NBEP subawards
-#  AUTHOR(S): Mariel Sorlien
-#  DATE LAST UPDATED: 2023-06-23
-#  GIT REPO: NBEP/grantmap
-#  R version 4.2.3 (2023-03-15 ucrt)  x86_64
+#' grantmap
+#'
+#' @description A shiny app that displays a map of NBEP funded projects.
+#' 
+#' @noRd
 
-library(shiny)
+library(dplyr)
 
 grantmap <- function(...){
   
@@ -13,14 +12,16 @@ grantmap <- function(...){
   
   ui <- bslib::page_sidebar(
     title = 'NBEP Funded Projects',
+    class = "bslib-page-dashboard",
     sidebar = bslib::sidebar(
       width = 250,
       sidebar_ui('sidebar')
       ),
     
-    # use_tota11y(),
+    # a11y::use_tota11y(),
     
     bslib::navset_card_tab(
+      id = "tabset",
       height = 450,
       full_screen = TRUE,
       title = 'Funded Projects',
@@ -44,7 +45,7 @@ grantmap <- function(...){
     
     grants <- sidebar_server('sidebar')
     map_server('map', grants)
-    table_server('table', grants)
+    table_server('table', grants, selected_tab = reactive({ input$tabset }))
     
   }
   

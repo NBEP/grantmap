@@ -1,44 +1,78 @@
-#  TITLE: mod_table.R
-#  DESCRIPTION: Module to display table of grant locations
-#  AUTHOR(S): Mariel Sorlien
-#  DATE LAST UPDATED: 2023-06-23
-#  GIT REPO: NBEP/grantmap
-#  R version 4.2.3 (2023-03-15 ucrt)  x86_64
-
-library(dplyr)
-
-# UI --------------------------------------------------------------------------
-
+#' table UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd
+#'
+#' @importFrom shiny NS tagList
 table_ui <- function(id) {
   
   ns <- NS(id)
   
   tagList(
-    # Reactable ----
-    shinycssloaders::withSpinner(
-      reactable::reactableOutput(ns('table')),
-      type = 5
-    )
+    reactable::reactableOutput(ns('table')) %>%
+      shinycssloaders::withSpinner(type = 5) %>%
+      (\(x) {
+        x[[4]] <- x[[4]] %>% bslib::as_fill_carrier() 
+        x
+      })()
+    # Code from stackoverflow responses by monsterrat
+    # https://stackoverflow.com/questions/77184183/how-to-use-shinycssloaders-withspinner-with-a-plot-output-in-a-bslib-card
   )
   
 }
 
-# Server ----------------------------------------------------------------------
-
-table_server <- function(id, df_filter) {
+#' table Server Functions
+#'
+#' @noRd
+table_server <- function(id, df_filter, selected_tab) {
   moduleServer(id, function(input, output, session) {
     
-    project_table <- reactive({
-      df_filter() %>%
-        select(!c(PROJECT_DESCRIPTION, LATITUDE, LONGITUDE)) %>%
-        rename_with(
-          ~ stringr::str_to_title(gsub("_", " ", .x, fixed = TRUE))) %>%
-        rename(Organization = Contractor)
+    # Set default table, update when switch to tab
+    val <- reactiveValues(
+      df = df_projects,
+      count = 0)
+    
+    observe({ 
+      if (val$count < 2) {
+        val$count <- val$count + 1
+        val$df <- df_filter()
+      }
+    }) %>%
+      bindEvent(selected_tab())
+    
+    # Render table
+    output$table <- reactable::renderReactable({
+      reactable::reactable(
+        val$df,
+        highlight = TRUE,
+        defaultColDef = reactable::colDef(
+          header = function(value) 
+            gsub("_", " ", value, fixed = TRUE) %>% stringr::str_to_title(),
+          headerStyle = list(background = "#f7f7f8")),
+        columns = list(
+          GRANT_TITLE = reactable::colDef(
+            rowHeader = TRUE,
+            sticky = "left"),
+          PROJECT_TITLE = reactable::colDef(
+            sticky = "left",
+            style = list(borderRight = "1px solid #eee")),
+          PROJECT_COST = reactable::colDef(
+            format = reactable::colFormat(currency="USD", separators = TRUE)),
+          PROJECT_DESCRIPTION = reactable::colDef(show = FALSE),
+          LATITUDE = reactable::colDef(show = FALSE),
+          LONGITUDE = reactable::colDef(show = FALSE),
+          POPUP_TEXT = reactable::colDef(show = FALSE))
+        )
     })
     
-    output$table <- reactable::renderReactable({
-      reactable::reactable(project_table())
-    })
+    # Update table
+    observe({ 
+      reactable::updateReactable("table", data = df_filter()) 
+    }) %>%
+      bindEvent(df_filter())
     
   })
 }
