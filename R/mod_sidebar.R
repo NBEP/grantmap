@@ -62,8 +62,8 @@ sidebar_ui <- function(id) {
     shinyWidgets::pickerInput(
       ns('funding'),
       label = h2('Funding Source'),
-      choices = c(list_funding, 'Other' = ''),
-      selected = c(list_funding, ''),
+      choices = c(list_funding, 'Other' = ' '),
+      selected = c(list_funding, ' '),
       options = list(
         `actions-box` = TRUE,
         `live-search` = TRUE,
@@ -101,15 +101,12 @@ sidebar_server <- function(id) {
       req(input$funding)
       req(input$year)
       
-      fun_source <- input$funding
-      if ('' %in% fun_source) { fun_source <- c(fun_source, NA) }
-      
       df_filter <- df_projects %>%
         dplyr::filter(
           STATUS %in% input$status,
           ORGANIZATION %in% input$org,
           CATEGORY %in% input$category,
-          FUNDING_SOURCE %in% fun_source,
+          FUNDING_SOURCE %in% input$funding,
           START_YEAR %in% input$year
       )
       

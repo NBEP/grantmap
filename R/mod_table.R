@@ -60,7 +60,7 @@ table_server <- function(id, df_filter, selected_tab) {
             sticky = "left",
             style = list(borderRight = "1px solid #eee")),
           PROJECT_COST = reactable::colDef(
-            format = reactable::colFormat(currency="USD", separators = TRUE)),
+            format = reactable::colFormat(prefix="$", separators = TRUE)),
           PROJECT_DESCRIPTION = reactable::colDef(show = FALSE),
           LATITUDE = reactable::colDef(show = FALSE),
           LONGITUDE = reactable::colDef(show = FALSE),

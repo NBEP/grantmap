@@ -4,6 +4,7 @@
 #' 
 #' @noRd
 
+library(shiny)
 library(dplyr)
 
 grantmap <- function(...){

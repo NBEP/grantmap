@@ -113,7 +113,7 @@ map_server <- function(id, df_filter) {
         leaflet::clearMarkers() %>%
         leaflet::clearMarkerClusters()
       
-      if (nrow(df_filter()) > 0 ){
+      if (nrow(df_filter()) > 0 ) {
         leaflet::leafletProxy("map") %>%
           # Add spinner
           leaflet.extras2::startSpinner(
@@ -143,7 +143,8 @@ map_server <- function(id, df_filter) {
           # Stop spinner
           leaflet.extras2::stopSpinner() 
       }
-    })
+    }) %>%
+      bindEvent(df_filter())
     
   })
 }
