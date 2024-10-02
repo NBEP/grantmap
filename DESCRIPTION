@@ -16,13 +16,10 @@ Imports:
     dplyr,
     leaflegend,
     leaflet,
-    leaflet.extras2,
     pkgload,
     reactable,
     sf,
     shiny,
-    shinya11y,
-    shinycssloaders,
     shinyWidgets,
     stringr,
     tidyr

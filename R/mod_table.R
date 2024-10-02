@@ -12,16 +12,8 @@ table_ui <- function(id) {
   ns <- NS(id)
   
   tagList(
-    reactable::reactableOutput(ns('table')) %>%
-      shinycssloaders::withSpinner(type = 5) %>%
-      (\(x) {
-        x[[4]] <- x[[4]] %>% bslib::as_fill_carrier() 
-        x
-      })()
-    # Code from stackoverflow responses by monsterrat
-    # https://stackoverflow.com/questions/77184183/how-to-use-shinycssloaders-withspinner-with-a-plot-output-in-a-bslib-card
+    reactable::reactableOutput(ns('table')) 
   )
-  
 }
 
 #' table Server Functions

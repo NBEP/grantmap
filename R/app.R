@@ -19,8 +19,6 @@ grantmap <- function(...){
       sidebar_ui('sidebar')
       ),
     
-    # a11y::use_tota11y(),
-    
     bslib::navset_card_tab(
       id = "tabset",
       height = 450,
