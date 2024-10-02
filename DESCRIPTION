@@ -2,7 +2,8 @@ Package: grantmap
 Title: NBEP funded projects
 Version: 0.0.0.9000
 Authors@R: 
-    person("Mariel", "Sorlien", , "msorlien@nbep.org", role = c("aut", "cre"))
+    person("Mariel", "Sorlien", , "msorlien@nbep.org", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7102-2918")))
 Description: Map of NBEP funded projects. 
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -18,8 +19,9 @@ Imports:
     leaflet,
     pkgload,
     reactable,
-    sf,
     shiny,
     shinyWidgets,
     stringr,
     tidyr
+Suggests: 
+    sf

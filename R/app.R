@@ -4,7 +4,6 @@
 #' 
 #' @noRd
 
-library(shiny)
 library(dplyr)
 
 grantmap <- function(...){
@@ -12,6 +11,7 @@ grantmap <- function(...){
   # ui ------------------------------------------------------------------------
   
   ui <- bslib::page_sidebar(
+    useBusyIndicators(),
     title = 'NBEP Funded Projects',
     class = "bslib-page-dashboard",
     sidebar = bslib::sidebar(
