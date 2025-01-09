@@ -20,6 +20,7 @@ Imports:
     leaflet,
     pkgload,
     reactable,
+    readr,
     shiny,
     shinyWidgets,
     stringr,
