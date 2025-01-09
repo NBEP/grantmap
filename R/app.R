@@ -79,7 +79,8 @@ grantmap <- function(...){
           "<br/><b><i>Funding Source: </i></b>", FUNDING_SOURCE,
           "<br/><br/><b><i>Description</i></b>: ", PROJECT_DESCRIPTION
           )
-        )
+        ) %>%
+      dplyr::arrange(GRANT_TITLE, PROJECT_TITLE)
     
     grants <- sidebar_server('sidebar', df)
     map_server('map', grants)
