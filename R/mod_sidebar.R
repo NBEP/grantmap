@@ -10,17 +10,6 @@
 sidebar_ui <- function(id) {
   ns <- NS(id)
   
-  # Define variables ----
-  list_category <- c('Capacity-Building', 'Education', 'Implementation', 
-                     'Monitoring', 'Outreach', 'Planning', 'Research', 
-                     'Restoration')
-  
-  list_year <- sort(unique(df_projects$START_YEAR), decreasing = TRUE)
-  list_year <- list_year[!is.na(list_year)]
-  
-  list_org_wrap <- stringr::str_wrap(list_org, width = 40)
-  list_org_wrap <- stringr::str_replace_all(list_org_wrap, "\\n", "<br>")
-  
   # UI ----
   tagList(
     # Select Status ----
@@ -31,58 +20,25 @@ sidebar_ui <- function(id) {
       selected = c('Ongoing', 'Complete')
       ),
     # Select Organization ----
-    shinyWidgets::pickerInput(
-      ns('org'),
-      label = h2('Organization'),
-      choices = list_org,
-      selected = list_org,
-      options = list(
-        `actions-box` = TRUE,
-        `live-search` = TRUE,
-        `selected-text-format` = 'count > 3',
-        container = 'body'),
-      multiple = TRUE,
-      choicesOpt = list(
-        content = list_org_wrap)
-    ),
+    htmlOutput(ns('select_org')),
     # Select category ----
-    shinyWidgets::pickerInput(
-      ns('category'),
-      label = h2('Category'),
-      choices = list_category,
-      selected = list_category,
-      options = list(
-        `actions-box` = TRUE,
-        `live-search` = TRUE,
-        `selected-text-format` = 'count > 3',
-        container = 'body'),
-      multiple = TRUE
+    select_dropdown(
+      ns('category'), 
+      label = h2('Category'), 
+      choices = c('Capacity-Building', 'Education', 'Implementation', 
+        'Monitoring', 'Outreach', 'Planning', 'Research', 'Restoration'),
+      sort_choices = FALSE
     ),
     # Select Funding Source ----
-    shinyWidgets::pickerInput(
-      ns('funding'),
-      label = h2('Funding Source'),
-      choices = c(list_funding, 'Other' = ' '),
-      selected = c(list_funding, ' '),
-      options = list(
-        `actions-box` = TRUE,
-        `live-search` = TRUE,
-        container = 'body'),
-      multiple = TRUE
+    select_dropdown(
+      ns('funding'), 
+      label = h2('Funding Source'), 
+      choices = c('BIL', 'NEP', 'SNEP', ' '), 
+      choice_names = c('BIL', 'NEP', 'SNEP', 'Other'), 
+      sort_choices = FALSE
     ),
     # Select year ----
-    shinyWidgets::pickerInput(
-      ns('year'),
-      label = h2('Funding Year'),
-      choices = list_year,
-      selected = list_year,
-      options = list(
-        `actions-box` = TRUE,
-        `live-search` = TRUE,
-        `selected-text-format` = 'count > 3',
-        container = 'body'),
-      multiple = TRUE
-    )
+    htmlOutput(ns('select_year'))
   )
   
 }
@@ -90,8 +46,44 @@ sidebar_ui <- function(id) {
 #' sidebar Server Functions
 #'
 #' @noRd
-sidebar_server <- function(id) {
+sidebar_server <- function(id, df) {
   moduleServer(id, function(input, output, session) {
+    ns <- NS(id)
+    
+    # UI elements ----
+    org_list <- reactive({ tidy_list(df$ORGANIZATION) })
+    org_wrap <- reactive({
+      org_wrap <- stringr::str_wrap(org_list(), width = 40)
+      org_wrap <- stringr::str_replace_all(org_wrap, "\\n", "<br>")
+      return(org_wrap)
+    })
+    
+    output$select_org <- renderUI({ 
+      shinyWidgets::pickerInput(
+        ns('org'),
+        label = h2('Organization'),
+        choices = org_list(),
+        selected = org_list(),
+        options = list(
+          `actions-box` = TRUE,
+          `live-search` = TRUE,
+          `selected-text-format` = 'count > 3',
+          container = 'body'),
+        multiple = TRUE,
+        choicesOpt = list(
+          content = org_wrap()
+        )
+      )
+    })
+    
+    output$select_year <- renderUI({ 
+      select_dropdown(
+        ns('year'), 
+        label = h2('Funding Year'), 
+        choices = df$START_YEAR, 
+        sort_decreasing = TRUE
+      )
+    })
     
     # Filter data ----
     df_filter <- reactive({
@@ -101,7 +93,7 @@ sidebar_server <- function(id) {
       req(input$funding)
       req(input$year)
       
-      df_filter <- df_projects %>%
+      df_filter <- df %>%
         dplyr::filter(
           STATUS %in% input$status,
           ORGANIZATION %in% input$org,
@@ -111,7 +103,6 @@ sidebar_server <- function(id) {
       )
       
       return(df_filter)
-      
     })
     
     # Output reactive values ----
