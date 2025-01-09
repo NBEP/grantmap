@@ -20,7 +20,11 @@ sidebar_ui <- function(id) {
       selected = c('Ongoing', 'Complete')
       ),
     # Select Organization ----
-    htmlOutput(ns('select_org')),
+    select_dropdown(
+      ns('org'), 
+      label = h2('Organization'), 
+      choices = ''
+    ),
     # Select category ----
     select_dropdown(
       ns('category'), 
@@ -38,7 +42,12 @@ sidebar_ui <- function(id) {
       sort_choices = FALSE
     ),
     # Select year ----
-    htmlOutput(ns('select_year'))
+    select_dropdown(
+      ns('year'), 
+      label = h2('Funding Year'), 
+      choices = '', 
+      sort_decreasing = TRUE
+    )
   )
   
 }
@@ -50,40 +59,28 @@ sidebar_server <- function(id, df) {
   moduleServer(id, function(input, output, session) {
     ns <- NS(id)
     
-    # UI elements ----
-    org_list <- reactive({ tidy_list(df$ORGANIZATION) })
-    org_wrap <- reactive({
-      org_wrap <- stringr::str_wrap(org_list(), width = 40)
+    # Update UI on load ----
+    observe({
+      year_list <- tidy_list(df$START_YEAR, sort_decreasing = TRUE)
+      org_list <- tidy_list(df$ORGANIZATION)
+      org_wrap <- stringr::str_wrap(org_list, width = 40)
       org_wrap <- stringr::str_replace_all(org_wrap, "\\n", "<br>")
-      return(org_wrap)
-    })
-    
-    output$select_org <- renderUI({ 
-      shinyWidgets::pickerInput(
-        ns('org'),
-        label = h2('Organization'),
-        choices = org_list(),
-        selected = org_list(),
-        options = list(
-          `actions-box` = TRUE,
-          `live-search` = TRUE,
-          `selected-text-format` = 'count > 3',
-          container = 'body'),
-        multiple = TRUE,
-        choicesOpt = list(
-          content = org_wrap()
-        )
+      
+      shinyWidgets::updatePickerInput(
+        session = session,
+        inputId = 'org',
+        choices = org_list,
+        selected = org_list,
+        choicesOpt = list(content = org_wrap)
       )
-    })
-    
-    output$select_year <- renderUI({ 
-      select_dropdown(
-        ns('year'), 
-        label = h2('Funding Year'), 
-        choices = df$START_YEAR, 
-        sort_decreasing = TRUE
+      shinyWidgets::updatePickerInput(
+        session = session,
+        inputId = 'year',
+        choices = year_list,
+        selected = year_list
       )
-    })
+    }) %>%
+      bindEvent(df)
     
     # Filter data ----
     df_filter <- reactive({
