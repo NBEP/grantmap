@@ -15,10 +15,12 @@ LazyData: true
 Imports: 
     bslib,
     dplyr,
+    googlesheets4,
     leaflegend,
     leaflet,
     pkgload,
     reactable,
+    readr,
     shiny,
     shinyWidgets,
     stringr,

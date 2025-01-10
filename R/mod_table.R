@@ -19,12 +19,12 @@ table_ui <- function(id) {
 #' table Server Functions
 #'
 #' @noRd
-table_server <- function(id, df_filter, selected_tab) {
+table_server <- function(id, df, df_filter, selected_tab) {
   moduleServer(id, function(input, output, session) {
     
     # Set default table, update when switch to tab
     val <- reactiveValues(
-      df = df_projects,
+      df = df,
       count = 0)
     
     observe({ 
