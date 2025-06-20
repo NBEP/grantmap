@@ -30,21 +30,21 @@ df_raw <- readr::read_csv(
       "Longitude" = "LONGITUDE"
     )
   ) %>%
-  dplyr::mutate(across(where(is.numeric), ~ na_if(., -999999))) %>%  
+  dplyr::mutate(across(where(is.numeric), ~ na_if(., -999999))) %>%
   dplyr::mutate(
     across(
-      c("Start_Year", "End_Year"), 
+      c("Start_Year", "End_Year"),
       ~ na_if(., 1900)
     )
   ) %>%
   dplyr::mutate(
     across(
-      c("Latitude", "Longitude", "Funding_Amount"), 
+      c("Latitude", "Longitude", "Funding_Amount"),
       ~ na_if(., 0)
     )
   ) %>%
   format_coordinates(
-    lat_min = 41.29999924, 
+    lat_min = 41.29999924,
     lat_max = 42.43180084,
     lon_min = -71.9937973,
     lon_max = -70.5164032
@@ -52,7 +52,7 @@ df_raw <- readr::read_csv(
 
 # Initial checks
 chk_unique(df_raw, "Project_Title")
-chk <- is.na(df_raw$Report) | grepl("http://", df_raw$Report) | 
+chk <- is.na(df_raw$Report) | grepl("http://", df_raw$Report) |
   grepl("https://", df_raw$Report)
 if (any(!chk)) {
   stop("Invalid link in rows ", paste(which(chk), collapse = ", "))
@@ -63,11 +63,8 @@ df_sum <- df_raw %>%
   dplyr::group_by(.data$Grant) %>%
   dplyr::tally()
 
-df_raw <- dplyr::left_join(df_raw, df_sum, by = "Grant") %>%
-  dplyr::arrange("Grant_Title", "Project_Title")
-
+df_raw <- dplyr::left_join(df_raw, df_sum, by = "Grant") 
 df_raw$id <- sequence(rle(as.character(df_raw$Grant))$lengths)
-
 
 # Format popup
 df_raw <- df_raw %>%
@@ -77,53 +74,54 @@ df_raw <- df_raw %>%
       .data$Report
     )
   ) %>%
-  dplyr::mutate(
-    "Pretty_Funding" = mapply(
-      function(x) ifelse(
-        is.na(x), 
-        NA, 
-        paste0("$", prettyNum(x, big.mark = ",", scientific = FALSE))
-      ),
-      .data$Funding_Amount
-    )
-  ) %>%
   dplyr::mutate("Popup" = paste0("<p><b>", .data$Grant, "</b>")) %>%
-  # popup_column("Grant") %>%
   dplyr::mutate(
     "Popup" = dplyr::if_else(
       .data$n < 2,
-      .data$Popup,
+      paste0(.data$Popup, "</p><p>"),
       paste0(
-        .data$Popup, 
-        "<br><b>Project ", .data$id, " of ", .data$n, ":</b> ", .data$Project
+        .data$Popup,
+        "<br>Project ", .data$id, " of ", .data$n, ": ", .data$Project,
+        "</p><p>"
       )
     )
   ) %>%
-  popup_column(c("Organization", "Start_Year", "End_Year", "Status")) %>%
+  popup_column(c("Organization", "Status")) %>%
   dplyr::mutate(
     "Popup" = dplyr::if_else(
       is.na(.data$Report),
       paste0(.data$Popup, "</p><p>"),
-      paste0(.data$Popup, '</p><p>', .data$Report_Link, "</p><p>")
+      paste0(.data$Popup, "</p><p>", .data$Report_Link, "</p><p>")
     )
   ) %>%
-  popup_column("Pretty_Funding", "Funding Amount") %>%
-  popup_column("Funding_Source") %>%
+  popup_column(c("Start_Year", "End_Year")) %>%
+  popup_column("Funding_Source", delim = "</p><p>") %>%
+  dplyr::mutate(
+    "Popup" = if_else(
+      is.na(.data$Funding_Amount),
+      paste0(.data$Popup, "<br><b>Funding Amount:</b> -"),
+      paste0(
+        .data$Popup, "<br><b>Funding Amount:</b> $",
+        prettyNum(.data$Funding_Amount, big.mark = ",", scientific = FALSE)
+      )
+    )
+  ) %>%
   popup_column("Description", hide_na = TRUE, delim = "</p><p>") %>%
   dplyr::mutate("Popup" = paste0(.data$Popup, "</p>")) %>%
   dplyr::mutate("Popup" = gsub("<p><br>", "<p>", .data$Popup)) %>%
   dplyr::select(
-    "Grant", "Project", "Organization", "Category", "Status", "Funding_Source",
-    "Funding_Amount", "Start_Year", "End_Year", "Description", "Report", 
+    "Grant", "Project", "Organization", "Status", "Start_Year", "End_Year",
+    "Category", "Funding_Source", "Funding_Amount", "Report", "Description",
     "Latitude", "Longitude", "Popup"
-  )
+  ) %>%
+  dplyr::arrange(.data$Grant, .data$Project)
 
 usethis::use_data(df_raw, overwrite = TRUE)
 
 # Hidden variables -----
 org_list <- unique(df_raw$Organization) %>%
   sort(na.last = TRUE)
-date_max <- max(c(df_raw$Start_Year, df_raw$End_Year), na.rm = TRUE)
+date_max <- max(df_raw$Start_Year, na.rm = TRUE)
 date_range <- c(1985, date_max)
 
 usethis::use_data(

@@ -26,9 +26,9 @@ select_dropdown <- function(
   if (!chk && !is.null(choice_names)) {
     stop("choices and choice_names must be the same length")
   }
-  
+
   names(choices) <- choice_names
-  
+
   name_wrap <- NULL
   if (is.null(choice_names)) {
     max_len <- max(nchar(choices), na.rm = TRUE)
@@ -41,10 +41,10 @@ select_dropdown <- function(
       name_wrap <- wrap_text(choice_names)
     }
   }
-  
+
   # Remove duplicates, sort list
   choices <- tidy_list(choices, sort_choices, decreasing, add_other)
-  
+
   if (is.null(max_options) && multiple) {
     selected <- choices
     allow_actions <- TRUE
@@ -52,7 +52,7 @@ select_dropdown <- function(
     selected <- choices[1]
     allow_actions <- FALSE
   }
-  
+
   shinyWidgets::pickerInput(
     id,
     label = label,
@@ -102,27 +102,27 @@ tidy_list <- function(x, sort_list = TRUE, decreasing = FALSE,
   if (length(x) == 1) {
     return(x)
   }
-  
+
   chk <- is.na(x)
   if (all(chk)) {
     return(NA)
   } else if (all(!chk)) {
     add_other <- FALSE
   }
-  
+
   x <- x[!duplicated(x)]
   x <- x[!is.na(x)]
-  
+
   if (sort_list && !is.null(names(x))) {
     x <- x[order(names(x), decreasing = decreasing)]
   } else if (sort_list) {
     x <- sort(x, decreasing = decreasing)
   }
-  
+
   if (add_other) {
     x <- c(x, "Other")
   }
-  
+
   return(x)
 }
 
@@ -141,15 +141,15 @@ wrap_text <- function(x) {
   if (is.null(x) || all(is.na(x))) {
     return(NULL)
   }
-  
+
   max_len <- max(nchar(x), na.rm = TRUE)
-  
+
   if (max_len < 41) {
     return(x)
   }
-  
+
   x <- stringr::str_wrap(x, width = 40)
   x <- stringr::str_replace_all(x, "\\n", "<br>")
-  
+
   return(x)
 }

@@ -14,13 +14,13 @@ external_link <- function(label, link) {
   if (!chk) {
     stop("Invalid link")
   }
-  
+
   link_code <- paste0(
     '<a href="', trimws(link), '" rel="noreferrer" target="_blank">',
     trimws(label),
     '<span class="visually-hidden"> (opens in new tab)</span></a>'
   )
-  
+
   return(link_code)
 }
 
@@ -38,17 +38,17 @@ external_link <- function(label, link) {
 #' @return String containing HTML code for a clickable image link.
 #'
 #' @noRd
-image_link <- function(link, image_link, alt, width="auto", height="auto") {
+image_link <- function(link, image_link, alt, width = "auto", height = "auto") {
   chk <- grepl("http://", link) | grepl("https://", link)
   if (!chk) {
     stop("Invalid link")
   }
-  
+
   image_code <- paste0(
     '<a href="', trimws(link), '" rel="noreferrer" target="_blank"><img src="',
     trimws(image_link), '" width = "', width, '" height = "', height,
     '" alt = "', trimws(alt), '"></a>'
   )
-  
+
   return(image_code)
 }

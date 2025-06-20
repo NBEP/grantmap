@@ -39,7 +39,7 @@ Default "<br><b>in_title:</b> in_data".}
 Updated string.
 }
 \description{
-`popup_text` formats input text and values as a line of text, which it 
+`popup_text` formats input text and values as a line of text, which it
 appends to the input.
 * Unless `style` is updated, each line is formatted as
 "<b>`in_title`:</b> `in_data`"

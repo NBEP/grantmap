@@ -4,7 +4,7 @@ test_that("popup_text works", {
     popup_text("foo", "bar", "foofy"),
     "foo<br><b>bar:</b> foofy"
   )
-  
+
   # Extra options
   expect_equal(
     popup_text("foo", "bar", NA, na_value = "missing"),
@@ -18,7 +18,7 @@ test_that("popup_text works", {
     popup_text("foo", "bar", 12, style = "in_title: $in_data.00", delim = "\n"),
     "foo\nbar: $12.00"
   )
-  
+
   # NA handling
   expect_equal(
     popup_text(NA, "bar", 12),
@@ -36,7 +36,7 @@ test_that("popup_text works", {
     popup_text(NA, "bar", NA, hide_na = TRUE),
     NA
   )
-  
+
   # Pipes
   expect_equal(
     "<h1>Suberb Owls</h1>" %>%
@@ -72,7 +72,7 @@ test_that("popup_column works", {
     "Status" = c("Complete", "Ongoing"),
     "Year" = c(2012, 2016)
   )
-  
+
   # Test basic
   expect_equal(
     popup_column(df_in, c("Project_Name", "Status", "Year")),
@@ -86,7 +86,7 @@ test_that("popup_column works", {
       )
     )
   )
-  
+
   # Test complex
   expect_equal(
     df_in %>%
@@ -115,7 +115,7 @@ test_that("popup_column handles NA values", {
     "Status" = c("Complete", NA),
     "Year" = c(NA, 2016)
   )
-  
+
   # Default settings
   expect_equal(
     popup_column(df_in, c("Project_Name", "Status", "Year")),
@@ -171,7 +171,7 @@ test_that("popup_column accepts pipes", {
     "Status" = c("Complete", "Ongoing"),
     "Year" = c(2012, 2016)
   )
-  
+
   # Default settings
   expect_equal(
     popup_column(df_in, "Project_Name") %>%
@@ -195,7 +195,7 @@ test_that("popup_column error messages", {
     "Status" = c("Complete", "Ongoing"),
     "Year" = c(2012, 2016)
   )
-  
+
   expect_error(
     popup_column(df_in, "foofy"),
     regexp = "Column foofy does not exist"

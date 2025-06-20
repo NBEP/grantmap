@@ -27,7 +27,7 @@ multifilter <- function(.data, col_name, x, delim = ",") {
     ) %>%
     dplyr::filter(!is.na(.data$temp_filter)) %>%
     dplyr::select(!"temp_filter")
-  
+
   return(dat)
 }
 
@@ -48,10 +48,10 @@ intersect_list <- function(x, y, delim = ",") {
   y <- stringr::str_split(y, delim)
   y <- lapply(y, function(i) trimws(i))
   x <- dplyr::intersect(x, unlist(y))
-  
+
   if (length(x) == 0) {
     return(NA)
   }
-  
+
   return(x)
 }

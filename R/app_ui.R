@@ -11,48 +11,48 @@ app_ui <- function(request) {
     # Your application UI logic
     bslib::page_sidebar(
       useBusyIndicators(),
-      title = 'NBEP Funded Projects',
+      title = "NBEP Funded Projects",
       class = "bslib-page-dashboard",
       sidebar = bslib::sidebar(
         width = 250,
-        mod_sidebar_ui('sidebar')
+        mod_sidebar_ui("sidebar")
       ),
       bslib::navset_card_tab(
         id = "tabset",
         height = 450,
         full_screen = TRUE,
-        title = 'Funded Projects',
+        title = "Funded Projects",
         bslib::nav_panel(
-          'Map',
-          mod_map_ui('map')
+          "Map",
+          mod_map_ui("map")
         ),
         bslib::nav_panel(
-          'Table',
-          mod_table_ui('table')
+          "Table",
+          mod_table_ui("table")
         )
-      ),
+      )#,
       # Logo (header) ----
-      bslib::nav_item(
-        tags$head(
-          tags$script(
-            HTML(
-              '$(document).ready(function() {
-              var containerHeight = $(".navbar .container-fluid").height() + "px";
-              $(".navbar .container-fluid")
-                .append(
-                  "<a href=\'https://www.nbep.org\'><img id = \'headerLogo\' " +
-                  "alt = \'Narragansett Bay Estuary Program\' " +
-                  "src=\'www/NBEP_logo_wide.png\' align=\'right\' height = " +
-                  containerHeight + "></a>"
-                );
-              });'
-            )
-          ),
-          tags$style(
-            HTML('@media (max-width:992px) { #headerLogo { display: none; }}')
-          )
-        )
-      )
+      # bslib::nav_item(
+      #   tags$head(
+      #     tags$script(
+      #       HTML(
+      #         '$(document).ready(function() {
+      #         var containerHeight = $(".navbar .container-fluid").height() + "px";
+      #         $(".navbar .container-fluid")
+      #           .append(
+      #             "<a href=\'https://www.nbep.org\'><img id = \'headerLogo\' " +
+      #             "alt = \'Narragansett Bay Estuary Program\' " +
+      #             "src=\'www/NBEP_logo_wide.png\' align=\'right\' height = " +
+      #             containerHeight + "></a>"
+      #           );
+      #         });'
+      #       )
+      #     ),
+      #     tags$style(
+      #       HTML("@media (max-width:992px) { #headerLogo { display: none; }}")
+      #     )
+      #   )
+      # )
     )
   )
 }

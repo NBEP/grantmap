@@ -17,16 +17,16 @@ test_that("tidy_list works", {
     tidy_list(c(NA, NA)),
     NA
   )
-  
+
   # Named list
   test <- c("foo", "bar", "foofy")
   names(test) <- c("wow", "superb", "owl")
-  
+
   test2 <- c("foofy", "bar", "foo")
   names(test2) <- c("owl", "superb", "wow")
-  
+
   expect_equal(tidy_list(test), test2)
-  
+
   # Additional options
   expect_equal(
     tidy_list(
@@ -79,13 +79,13 @@ test_that("wrap_text works", {
 test_that("select_dropdown works", {
   owl_list <- c("Bubo virginianus", "Tyto furcata", "Aegolius acadicus")
   names(owl_list) <- c("Great Horned Owl", "Barn Owl", "Saw-whet Owl")
-  
+
   abc_owls <- c("Tyto furcata", "Bubo virginianus", "Aegolius acadicus")
   names(abc_owls) <- c("Barn Owl", "Great Horned Owl", "Saw-whet Owl")
-  
+
   zyx_owls <- c("Aegolius acadicus", "Bubo virginianus", "Tyto furcata")
   names(zyx_owls) <- c("Saw-whet Owl", "Great Horned Owl", "Barn Owl")
-  
+
   # Default options
   expect_equal(
     select_dropdown(
@@ -110,13 +110,13 @@ test_that("select_dropdown works", {
       choicesOpt = list(content = NULL)
     )
   )
-  
+
   # Text wrap
   ipsum_in <- c(
     "Deadlights jack lad schooner",
     "Prow scuttle parrel provost Sail ho shrouds spirits boom mizzenmast."
   )
-  
+
   expect_equal(
     select_dropdown(
       id = "ipsum",
@@ -144,13 +144,13 @@ test_that("select_dropdown works", {
       )
     )
   )
-  
+
   ipsum_out <- c("pirate", "ipsum")
   names(ipsum_out) <- c(
     "Deadlights jack lad schooner",
     "Prow scuttle parrel provost Sail ho shrouds spirits boom mizzenmast."
   )
-  
+
   expect_equal(
     select_dropdown(
       id = "ipsum",
@@ -182,7 +182,7 @@ test_that("select_dropdown works", {
       )
     )
   )
-  
+
   # Extra Options
   expect_equal(
     select_dropdown(

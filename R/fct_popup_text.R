@@ -29,36 +29,36 @@ popup_column <- function(
     .data, col_name, col_title = NULL, target_col = "Popup", na_value = "-",
     hide_na = FALSE, style = "<b>in_title:</b> in_data", delim = "<br>") {
   dat <- .data
-  
+
   # Check for errors
   chk <- col_name %in% colnames(dat)
   if (any(!chk)) {
     bad_col <- col_name[which(!chk)]
     stop("Column ", paste(bad_col, sep = ", "), " does not exist")
   }
-  
+
   if (is.null(col_title)) {
     col_title <- gsub("_", " ", col_name)
   } else if (length(col_title) != length(col_name)) {
     stop("col_name and col_title must be same length")
   }
-  
+
   chk <- grepl("in_title", style) & grepl("in_data", style)
   if (any(!chk)) {
     stop("style must include in_title and in_data")
   }
-  
+
   # Set variables
   names(col_name) <- col_title
-  
+
   # Update dataframe
   if (!target_col %in% colnames(dat)) {
     dat[[target_col]] <- NA
   }
-  
+
   for (i in names(col_name)) {
     j <- col_name[[i]] # i = col_title, j = col_name
-    
+
     dat <- dat %>%
       dplyr::mutate(
         {{ target_col }} := mapply(
@@ -70,14 +70,14 @@ popup_column <- function(
         )
       )
   }
-  
+
   return(dat)
 }
 
 #' Format paired title and value as descriptive text
 #'
 #' @description
-#' `popup_text` formats input text and values as a line of text, which it 
+#' `popup_text` formats input text and values as a line of text, which it
 #' appends to the input.
 #' * Unless `style` is updated, each line is formatted as
 #' "<b>`in_title`:</b> `in_data`"
@@ -106,7 +106,7 @@ popup_text <- function(
   # Check errors
   chk <- length(in_title) == length(in_data)
   chk2 <- grepl("in_title", style) & grepl("in_data", style)
-  
+
   if (!chk && any(!chk2)) {
     stop(
       "in_title and in_data must be the same length",
@@ -117,14 +117,14 @@ popup_text <- function(
   } else if (any(!chk2)) {
     stop("style must include in_title and in_data")
   }
-  
+
   # Set variables
   names(in_data) <- in_title
-  
+
   # Append lines
   for (i in names(in_data)) {
     j <- in_data[[i]] # i = in_title, j = in_data
-    
+
     if (hide_na && is.na(j)) {
       new_line <- NULL
     } else if (is.na(j)) {
@@ -134,7 +134,7 @@ popup_text <- function(
       new_line <- gsub("in_title", i, style)
       new_line <- gsub("in_data", j, new_line)
     }
-    
+
     if (is.null(new_line)) {
       next
     } else if (is.na(.data)) {
@@ -143,6 +143,6 @@ popup_text <- function(
       .data <- paste0(.data, delim, new_line)
     }
   }
-  
+
   return(.data)
 }

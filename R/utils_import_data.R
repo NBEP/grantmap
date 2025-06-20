@@ -20,7 +20,7 @@ format_coordinates <- function(.data, lat_min = -90, lat_max = 90,
   if (chk) {
     stop("Invalid coordinate boundaries")
   }
-  
+
   dat <- .data %>%
     dplyr::mutate(
       dplyr::across(
@@ -50,7 +50,7 @@ format_coordinates <- function(.data, lat_min = -90, lat_max = 90,
         .data$Longitude
       )
     )
-  
+
   chk <- dat$temp_chk == "missing"
   if (any(chk)) {
     warning(
@@ -67,9 +67,9 @@ format_coordinates <- function(.data, lat_min = -90, lat_max = 90,
       call. = FALSE
     )
   }
-  
+
   dat <- dplyr::select(dat, !"temp_chk")
-  
+
   return(dat)
 }
 
@@ -100,7 +100,7 @@ format_town <- function(.data) {
   if (any(chk)) {
     warning("State is missing in rows ", paste(which(chk), collapse = ", "))
   }
-  
+
   dat <- .data %>%
     dplyr::mutate(
       "State" = dplyr::case_when(
@@ -110,7 +110,7 @@ format_town <- function(.data) {
         TRUE ~ NA
       )
     )
-  
+
   chk <- unique(dat$State)
   if (length(chk) > 1) {
     dat <- dat %>%
@@ -122,9 +122,9 @@ format_town <- function(.data) {
         )
       )
   }
-  
+
   dat <- dplyr::select(dat, !"State")
-  
+
   return(dat)
 }
 
@@ -135,7 +135,7 @@ format_town <- function(.data) {
 #'
 #' @param .data Dataframe.
 #' @param col_name String. Name of column to check for duplicate values.
-#' @param ignore_na Boolean. If TRUE, ignores NA values when searching for 
+#' @param ignore_na Boolean. If TRUE, ignores NA values when searching for
 #' duplicates. Default FALSE.
 #'
 #' @return Error message if duplicate value found.
@@ -149,7 +149,7 @@ chk_unique <- function(.data, col_name, ignore_na = FALSE) {
     }
     df_col <- df_col[!is.na(df_col)]
   }
-  
+
   chk <- duplicated(df_col) | duplicated(df_col, fromLast = TRUE)
   if (any(chk)) {
     stop(

@@ -28,7 +28,7 @@ test_that("multifilter works", {
     "birds" = c("barn owl", "great horned owl", "kingfisher"),
     "not_birds" = c("pine martin", "cat", "plastic owl")
   )
-  
+
   expect_equal(
     multifilter(df, "birds", c("owl", "eagle", "hawk"), delim = " "),
     data.frame(

@@ -10,9 +10,9 @@
 #' @importFrom shiny NS tagList
 mod_table_ui <- function(id) {
   ns <- NS(id)
-  
+
   tagList(
-    reactable::reactableOutput(ns('table')) 
+    reactable::reactableOutput(ns("table"))
   )
 }
 
@@ -26,27 +26,29 @@ mod_table_server <- function(id, df_filter) {
       init = df_raw,
       updated = df_raw
     )
-    
+
     observe({
       df_table$init <- df_filter()
     }) %>%
       bindEvent(df_filter(), ignoreInit = TRUE, once = TRUE)
-    
+
     observe({
       df_table$updated <- df_filter()
     }) %>%
       bindEvent(df_filter(), ignoreInit = TRUE)
-    
+
     # Render table
     output$table <- reactable::renderReactable({
       reactable::reactable(
         df_table$init,
         highlight = TRUE,
         defaultColDef = reactable::colDef(
-          header = function(value) 
-            gsub("_", " ", value, fixed = TRUE) %>% 
-            stringr::str_to_title(),
-          headerStyle = list(background = "#f7f7f8")),
+          header = function(value) {
+            gsub("_", " ", value, fixed = TRUE) %>%
+              stringr::str_to_title()
+          },
+          headerStyle = list(background = "#f7f7f8")
+        ),
         columns = list(
           "Grant" = reactable::colDef(
             rowHeader = TRUE,
@@ -59,18 +61,17 @@ mod_table_server <- function(id, df_filter) {
           "Description" = reactable::colDef(show = FALSE),
           "Latitude" = reactable::colDef(show = FALSE),
           "Longitude" = reactable::colDef(show = FALSE),
-          "Popup" = reactable::colDef(show = FALSE)#,
-          # "Report" = reactable::colDef(html = TRUE)
+          "Popup" = reactable::colDef(show = FALSE),
+          "Report" = reactable::colDef(html = TRUE)
         )
       )
     })
-    
+
     # Update table
-    observe({ 
-      reactable::updateReactable("table", data = df_table$updated) 
+    observe({
+      reactable::updateReactable("table", data = df_table$updated)
     }) %>%
       bindEvent(df_table$updated)
-    
   })
 }
 
