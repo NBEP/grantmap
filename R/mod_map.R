@@ -8,7 +8,7 @@
 #'
 #' @importFrom shiny NS tagList
 
-map_ui <- function(id) {
+mod_map_ui <- function(id) {
   ns <- NS(id)
   
   tagList(
@@ -19,7 +19,7 @@ map_ui <- function(id) {
 #' map Server Functions
 #'
 #' @noRd
-map_server <- function(id, df_filter) {
+mod_map_server <- function(id, df_filter) {
   moduleServer(id, function(input, output, session) {
     
     # Icons ----
@@ -33,24 +33,29 @@ map_server <- function(id, df_filter) {
                     'Monitoring', 'Outreach', 'Planning', 'Research', 
                     'Restoration')
     
-    icon_symbols <- setNames(Map(f = leaflegend::makeSymbol,
-                                 shape = icon_shape,
-                                 fillColor= icon_color, color = 'black',
-                                 fillOpacity = 1, opacity = 1,
-                                 height = 24, width = 24,
-                                 'stroke-width' = 2),
-                             # Assign name to each symbol
-                             nm=icon_names)
+    icon_symbols <- setNames(
+      Map(
+        f = leaflegend::makeSymbol,
+        shape = icon_shape,
+        fillColor= icon_color, color = 'black',
+        fillOpacity = 1, opacity = 1,
+        height = 24, width = 24,
+        'stroke-width' = 2
+      ),
+      # Assign name to each symbol
+      nm=icon_names
+    )
     
     # Leaflet basemap ----
     output$map <- leaflet::renderLeaflet({
       leaflet::leaflet() %>%
         # * Set map dimensions ----
-      leaflet::fitBounds(-71.9937973, # Lon min
-                  41.29999924, # Lat min
-                  -70.5164032, # Lon max
-                  42.43180084 # Lat max
-                ) %>%
+        leaflet::fitBounds(
+          -71.9937973, # Lon min
+          41.29999924, # Lat min
+          -70.5164032, # Lon max
+          42.43180084 # Lat max
+        ) %>%
         # * Add basemap tiles ----
         leaflet::addProviderTiles(
           leaflet::providers$CartoDB.Positron, 
@@ -73,11 +78,14 @@ map_server <- function(id, df_filter) {
           width = 20,
           height = 20,
           orientation = 'vertical',
-          title = htmltools::tags$div('Category',
-                                      style = 'font-size: 18px'),
+          title = htmltools::tags$div(
+            'Category',
+            style = 'font-size: 18px'
+          ),
           labelStyle = 'font-size: 18px;',
           position = 'topright',
-          group = 'Legend') %>%
+          group = 'Legend'
+        ) %>%
         # * Add scale bar ----
         leaflet::addScaleBar(position='bottomleft') %>%
         leaflet::addPolygons(
@@ -109,22 +117,22 @@ map_server <- function(id, df_filter) {
           # Add points 
           leaflet::addMarkers(
             data = df_filter(),
-            lng = ~LONGITUDE,
-            lat = ~LATITUDE,
+            lng = ~Longitude,
+            lat = ~Latitude,
             clusterOptions = leaflet::markerClusterOptions(),
             # Symbology
             icon = ~leaflet::icons(
-              iconUrl = icon_symbols[CATEGORY],
+              iconUrl = icon_symbols[Category],
               iconWidth = 20,
               iconHeight = 20),
             # Label
-            label = ~PROJECT_TITLE,
+            label = ~Project,
             labelOptions = leaflet::labelOptions(textsize = "15px"),
             # Popup
-            popup = ~POPUP_TEXT,
+            popup = ~Popup,
             # Accessibility
             options = leaflet::markerOptions(
-              alt = ~paste0(CATEGORY, ', ', PROJECT_TITLE))
+              alt = ~paste0(Category, ', ', Project))
           )
       }
     }) %>%

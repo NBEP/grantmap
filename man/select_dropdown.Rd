@@ -10,32 +10,41 @@ select_dropdown(
   choices,
   choice_names = NULL,
   sort_choices = TRUE,
-  sort_decreasing = FALSE,
+  decreasing = FALSE,
+  add_other = TRUE,
   multiple = TRUE,
   max_options = NULL
 )
 }
 \arguments{
-\item{id}{Widget id.}
+\item{id}{String. Widget id.}
 
-\item{label}{Widget heading/label.}
+\item{label}{String. Widget heading/label.}
 
-\item{choices}{Dropdown choices.}
+\item{choices}{List. Dropdown choices.}
 
-\item{choice_names}{Display names for choice variables. Default NULL.}
+\item{choice_names}{List. Display names for choice variables. If not `NULL`,
+must be same length as `choices`. Default `NULL`.}
 
-\item{sort_choices}{Boolean. Whether to sort the choices. Default TRUE.}
+\item{sort_choices}{Boolean. If `TRUE`, sorts items in dropdown
+alphabetically. If `FALSE`, does not change dropdown order and `decreasing`
+argument is ignored. Default `TRUE`.}
 
-\item{sort_decreasing}{Boolean. Whether to sort choices in decreasing order.
-Default FALSE.}
+\item{decreasing}{Boolean. If `TRUE`, sorts list in reverse alphabetical
+order. If `FALSE`, sorts list in alphabetical order. Default `FALSE`.}
 
-\item{multiple}{Boolean. Whether to allow multiple selections. Default TRUE.}
+\item{add_other}{Boolean. If `TRUE` and `NA` value included in list, adds
+"Other" to end of list. Default `TRUE`.}
 
-\item{max_options}{Maximum number of selections. Default NULL.}
+\item{multiple}{Boolean. Whether to allow multiple selections. Default
+`TRUE`.}
+
+\item{max_options}{Number. Maximum number of selections. Default `NULL`.}
 }
 \value{
-The return value, if any, from executing the function.
+A [shinyWidgets::pickerInput()] widget.
 }
 \description{
-Creates a `shinyWidgets::pickerInput` dropdown
+`select_dropdown()` creates a [shinyWidgets::pickerInput()]
+dropdown widget.
 }

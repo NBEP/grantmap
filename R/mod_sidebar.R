@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-sidebar_ui <- function(id) {
+mod_sidebar_ui <- function(id) {
   ns <- NS(id)
   
   # UI ----
@@ -23,7 +23,7 @@ sidebar_ui <- function(id) {
     select_dropdown(
       ns('org'), 
       label = h2('Organization'), 
-      choices = ''
+      choices = org_list
     ),
     # Select category ----
     select_dropdown(
@@ -42,11 +42,13 @@ sidebar_ui <- function(id) {
       sort_choices = FALSE
     ),
     # Select year ----
-    select_dropdown(
-      ns('year'), 
-      label = h2('Funding Year'), 
-      choices = '', 
-      sort_decreasing = TRUE
+    sliderInput(
+      inputId = ns("year"),
+      label = h3("Year"),
+      min = date_range[1],
+      max = date_range[2],
+      value = date_range,
+      sep = ""
     )
   )
   
@@ -55,32 +57,9 @@ sidebar_ui <- function(id) {
 #' sidebar Server Functions
 #'
 #' @noRd
-sidebar_server <- function(id, df) {
+mod_sidebar_server <- function(id, df) {
   moduleServer(id, function(input, output, session) {
     ns <- NS(id)
-    
-    # Update UI on load ----
-    observe({
-      year_list <- tidy_list(df$START_YEAR, sort_decreasing = TRUE)
-      org_list <- tidy_list(df$ORGANIZATION)
-      org_wrap <- stringr::str_wrap(org_list, width = 40)
-      org_wrap <- stringr::str_replace_all(org_wrap, "\\n", "<br>")
-      
-      shinyWidgets::updatePickerInput(
-        session = session,
-        inputId = 'org',
-        choices = org_list,
-        selected = org_list,
-        choicesOpt = list(content = org_wrap)
-      )
-      shinyWidgets::updatePickerInput(
-        session = session,
-        inputId = 'year',
-        choices = year_list,
-        selected = year_list
-      )
-    }) %>%
-      bindEvent(df)
     
     # Filter data ----
     df_filter <- reactive({
@@ -90,14 +69,15 @@ sidebar_server <- function(id, df) {
       req(input$funding)
       req(input$year)
       
-      df_filter <- df %>%
+      df_filter <- df_raw %>%
         dplyr::filter(
-          STATUS %in% input$status,
-          ORGANIZATION %in% input$org,
-          CATEGORY %in% input$category,
-          FUNDING_SOURCE %in% input$funding,
-          START_YEAR %in% input$year
-      )
+          .data$Status %in% input$status,
+          .data$Organization %in% input$org,
+          .data$Funding_Source %in% input$funding,
+          .data$Start_Year >= input$year[1],
+          .data$Start_Year <= input$year[2]
+        ) %>%
+        multifilter("Category", input$category)
       
       return(df_filter)
     })

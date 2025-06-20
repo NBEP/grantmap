@@ -15,9 +15,8 @@ app_ui <- function(request) {
       class = "bslib-page-dashboard",
       sidebar = bslib::sidebar(
         width = 250,
-        sidebar_ui('sidebar')
+        mod_sidebar_ui('sidebar')
       ),
-      
       bslib::navset_card_tab(
         id = "tabset",
         height = 450,
@@ -25,11 +24,33 @@ app_ui <- function(request) {
         title = 'Funded Projects',
         bslib::nav_panel(
           'Map',
-          map_ui('map')
+          mod_map_ui('map')
         ),
         bslib::nav_panel(
           'Table',
-          table_ui('table')
+          mod_table_ui('table')
+        )
+      ),
+      # Logo (header) ----
+      bslib::nav_item(
+        tags$head(
+          tags$script(
+            HTML(
+              '$(document).ready(function() {
+              var containerHeight = $(".navbar .container-fluid").height() + "px";
+              $(".navbar .container-fluid")
+                .append(
+                  "<a href=\'https://www.nbep.org\'><img id = \'headerLogo\' " +
+                  "alt = \'Narragansett Bay Estuary Program\' " +
+                  "src=\'www/NBEP_logo_wide.png\' align=\'right\' height = " +
+                  containerHeight + "></a>"
+                );
+              });'
+            )
+          ),
+          tags$style(
+            HTML('@media (max-width:992px) { #headerLogo { display: none; }}')
+          )
         )
       )
     )

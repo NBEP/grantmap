@@ -35,6 +35,7 @@ golem::add_fct("dropdown", with_test = TRUE)
 golem::add_fct("multifilter", with_test = TRUE)
 golem::add_fct("popup_text", with_test = TRUE)
 golem::add_utils("import_data", with_test = TRUE)
+golem::add_utils("html", with_test = TRUE)
 
 ## External resources
 ## Creates .js and .css files at inst/app/www
