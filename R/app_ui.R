@@ -8,51 +8,41 @@ app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
+    useBusyIndicators(),
     # Your application UI logic
-    bslib::page_sidebar(
-      useBusyIndicators(),
+    bslib::page_navbar(
       title = "NBEP Funded Projects",
-      class = "bslib-page-dashboard",
+      id = "main_tabset",
       sidebar = bslib::sidebar(
         width = 250,
         mod_sidebar_ui("sidebar")
       ),
-      bslib::navset_card_tab(
-        id = "tabset",
-        height = 450,
-        full_screen = TRUE,
-        title = "Funded Projects",
-        bslib::nav_panel(
-          "Map",
-          mod_map_ui("map")
-        ),
-        bslib::nav_panel(
-          "Table",
-          mod_table_ui("table")
+      # Tab: Map ----
+      bslib::nav_panel(
+        "Map",
+        value = "map_tab",
+        class = "bslib-page-dashboard",
+        bslib::navset_card_tab(
+          id = "map_tabset",
+          height = 450,
+          full_screen = TRUE,
+          bslib::nav_panel(
+            "Map",
+            mod_map_ui("map")
+          ),
+          bslib::nav_panel(
+            "Table",
+            mod_table_ui("table")
+          )
         )
-      )#,
-      # Logo (header) ----
-      # bslib::nav_item(
-      #   tags$head(
-      #     tags$script(
-      #       HTML(
-      #         '$(document).ready(function() {
-      #         var containerHeight = $(".navbar .container-fluid").height() + "px";
-      #         $(".navbar .container-fluid")
-      #           .append(
-      #             "<a href=\'https://www.nbep.org\'><img id = \'headerLogo\' " +
-      #             "alt = \'Narragansett Bay Estuary Program\' " +
-      #             "src=\'www/NBEP_logo_wide.png\' align=\'right\' height = " +
-      #             containerHeight + "></a>"
-      #           );
-      #         });'
-      #       )
-      #     ),
-      #     tags$style(
-      #       HTML("@media (max-width:992px) { #headerLogo { display: none; }}")
-      #     )
-      #   )
-      # )
+      ),
+      # Tab: Info ----
+      bslib::nav_panel(
+        "Project Details",
+        value = "info_tab",
+        class = "bslib-page-dashboard",
+        mod_info_ui("info")
+      )
     )
   )
 }

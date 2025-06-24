@@ -4,8 +4,11 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Mariel", "Sorlien", , "info@nbep.org", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-7102-2918"))
-Description: An interactive map of projects funded by the Narragansett Bay Estuary Program.
+Description: An interactive map of projects funded by the Narragansett Bay
+    Estuary Program.
 License: MIT + file LICENSE
+Depends: 
+    R (>= 3.5)
 Imports: 
     bslib,
     config,
@@ -16,7 +19,6 @@ Imports:
     leaflegend,
     leaflet,
     magrittr,
-    pkgload,
     reactable,
     rlang,
     sf,
@@ -32,5 +34,3 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 RoxygenNote: 7.3.2
-Depends: 
-    R (>= 3.5)

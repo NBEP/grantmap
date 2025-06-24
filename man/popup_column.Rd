@@ -55,5 +55,5 @@ from the input dataframe.
 * A delimiter is added between each line of text. The default is "<br>"
 }
 \seealso{
-[popup_text()]
+[info_text()]
 }

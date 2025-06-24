@@ -19,9 +19,9 @@
 #' "Popup".
 #' * If `target_col` does not exist, it will be added to the dataframe.
 #'
-#' @inheritParams popup_text
+#' @inheritParams info_text
 #'
-#' @seealso [popup_text()]
+#' @seealso [info_text()]
 #'
 #' @return Updated dataframe with column named "Popup" unless `target_col`
 #' set to different value. "Popup" column contains formatted popup text.
@@ -63,7 +63,7 @@ popup_column <- function(
       dplyr::mutate(
         {{ target_col }} := mapply(
           function(w, x, y) {
-            popup_text(w, x, y, na_value, hide_na, style, delim)
+            info_text(w, x, y, na_value, hide_na, style, delim)
           },
           .data[[target_col]], !!i, .data[[j]],
           USE.NAMES = FALSE
@@ -77,7 +77,7 @@ popup_column <- function(
 #' Format paired title and value as descriptive text
 #'
 #' @description
-#' `popup_text` formats input text and values as a line of text, which it
+#' `info_text` formats input text and values as a line of text, which it
 #' appends to the input.
 #' * Unless `style` is updated, each line is formatted as
 #' "<b>`in_title`:</b> `in_data`"
@@ -100,7 +100,7 @@ popup_column <- function(
 #' @seealso [popup_column()]
 #'
 #' @return Updated string.
-popup_text <- function(
+info_text <- function(
     .data, in_title, in_data, na_value = "-", hide_na = FALSE,
     style = "<b>in_title:</b> in_data", delim = "<br>") {
   # Check errors

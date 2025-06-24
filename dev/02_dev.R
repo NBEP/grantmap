@@ -28,6 +28,7 @@ usethis::use_import_from("stats", "setNames")
 golem::add_module(name = "map", with_test = TRUE)
 golem::add_module(name = "sidebar", with_test = TRUE)
 golem::add_module(name = "table", with_test = TRUE)
+golem::add_module(name = "info", with_test = TRUE)
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
@@ -36,12 +37,13 @@ golem::add_fct("multifilter", with_test = TRUE)
 golem::add_fct("popup_text", with_test = TRUE)
 golem::add_utils("import_data", with_test = TRUE)
 golem::add_utils("html", with_test = TRUE)
+golem::add_utils("info", with_test = TRUE)
 
 ## External resources
 ## Creates .js and .css files at inst/app/www
-# golem::add_js_file("script")
+golem::add_js_file("script")
 # golem::add_js_handler("handlers")
-# golem::add_css_file("custom")
+golem::add_css_file("custom")
 # golem::add_sass_file("custom")
 # golem::add_any_file("file.json")
 
