@@ -1,10 +1,12 @@
 test_that("format_coordinates works", {
   good_coord <- data.frame(
+    "Project" = c("foo", "bar", "foofy"),
     "Latitude" = c(56, 12, 47),
     "Longitude" = c(24, 85, 98)
   )
 
   bad_coord <- data.frame(
+    "Project" = c("foo", "bar", "foofy"),
     "Latitude" = c(56, 12, 98),
     "Longitude" = c(186, NA, 98)
   )
@@ -19,6 +21,7 @@ test_that("format_coordinates works", {
       format_coordinates(bad_coord)
     ),
     data.frame(
+      "Project" = c("foo", "bar", "foofy"),
       "Latitude" = c(56, 12, NA),
       "Longitude" = c(NA, NA, 98)
     )
@@ -27,11 +30,13 @@ test_that("format_coordinates works", {
 
 test_that("format_coordinates error messages", {
   missing_coord <- data.frame(
+    "Project" = c("foo", "bar", "foofy"),
     "Latitude" = c(56, NA, 47),
     "Longitude" = c(24, 85, NA)
   )
 
   bad_coord <- data.frame(
+    "Project" = c("foo", "bar", "foofy"),
     "Latitude" = c(56, -92, 47),
     "Longitude" = c(224, 85, 98)
   )
@@ -43,12 +48,12 @@ test_that("format_coordinates error messages", {
 
   expect_warning(
     format_coordinates(missing_coord),
-    regexp = "Missing coordinates. Check rows 2, 3"
+    regexp = "Missing coordinates. Check projects:\n\tbar\n\tfoofy"
   )
 
   expect_warning(
     format_coordinates(bad_coord),
-    regexp = "Invalid coordinates. Check rows 1, 2"
+    regexp = "Invalid coordinates. Check projects:\n\tfoo\n\tbar"
   )
 })
 

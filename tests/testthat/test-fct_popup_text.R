@@ -1,66 +1,66 @@
-# popup_text ----
-test_that("popup_text works", {
+# info_text ----
+test_that("info_text works", {
   expect_equal(
-    popup_text("foo", "bar", "foofy"),
+    info_text("foo", "bar", "foofy"),
     "foo<br><b>bar:</b> foofy"
   )
 
   # Extra options
   expect_equal(
-    popup_text("foo", "bar", NA, na_value = "missing"),
+    info_text("foo", "bar", NA, na_value = "missing"),
     "foo<br><b>bar:</b> missing"
   )
   expect_equal(
-    popup_text("foo", "bar", NA, hide_na = TRUE),
+    info_text("foo", "bar", NA, hide_na = TRUE),
     "foo"
   )
   expect_equal(
-    popup_text("foo", "bar", 12, style = "in_title: $in_data.00", delim = "\n"),
+    info_text("foo", "bar", 12, style = "in_title: $in_data.00", delim = "\n"),
     "foo\nbar: $12.00"
   )
 
   # NA handling
   expect_equal(
-    popup_text(NA, "bar", 12),
+    info_text(NA, "bar", 12),
     "<b>bar:</b> 12"
   )
   expect_equal(
-    popup_text("foo", "bar", NA),
+    info_text("foo", "bar", NA),
     "foo<br><b>bar:</b> -"
   )
   expect_equal(
-    popup_text("foo", "bar", NA, style = "<b>in_title:</b> startin_dataend"),
+    info_text("foo", "bar", NA, style = "<b>in_title:</b> startin_dataend"),
     "foo<br><b>bar:</b> start-end"
   )
   expect_equal(
-    popup_text(NA, "bar", NA, hide_na = TRUE),
+    info_text(NA, "bar", NA, hide_na = TRUE),
     NA
   )
 
   # Pipes
   expect_equal(
     "<h1>Suberb Owls</h1>" %>%
-      popup_text(
+      info_text(
         c("Great Horned Owl", "Saw-whet Owl"),
         c("big", "small"),
         style = "<b>in_title:</b> it is in_data"
       ) %>%
-      popup_text("Barn Owl", "it has a heart-shaped face"),
+      info_text("Barn Owl", "it has a heart-shaped face"),
     "<h1>Suberb Owls</h1><br><b>Great Horned Owl:</b> it is big<br><b>Saw-whet Owl:</b> it is small<br><b>Barn Owl:</b> it has a heart-shaped face"
   )
 })
 
-test_that("popup_text error message", {
+test_that("info_text error message", {
   expect_error(
-    popup_text("superb", "birb", c("owl", "duck")),
+    info_text("superb", "birb", c("owl", "duck")),
     regexp = "in_title and in_data must be the same length"
   )
   expect_error(
-    popup_text("superb", "birb", "owl", style = "foo"),
+    info_text("superb", "birb", "owl", style = "foo"),
     regexp = "style must include in_title and in_data"
   )
   expect_error(
-    popup_text("superb", "birb", c("owl", "duck"), style = "foo"),
+    info_text("superb", "birb", c("owl", "duck"), style = "foo"),
     regexp = "in_title and in_data must be the same length\n  style must include in_title and in_data"
   )
 })

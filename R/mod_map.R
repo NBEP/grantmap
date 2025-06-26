@@ -21,6 +21,8 @@ mod_map_ui <- function(id) {
 #' @noRd
 mod_map_server <- function(id, df_filter) {
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+    
     # Icons ----
     icon_color <- c("#fde725", "#35b779")
     icon_shape <- c("circle", "rect")
@@ -98,6 +100,7 @@ mod_map_server <- function(id, df_filter) {
             data = df_filter(),
             lng = ~Longitude,
             lat = ~Latitude,
+            layerId = ~Project,
             clusterOptions = leaflet::markerClusterOptions(),
             # Symbology
             icon = ~ leaflet::icons(
@@ -109,7 +112,19 @@ mod_map_server <- function(id, df_filter) {
             label = ~Project,
             labelOptions = leaflet::labelOptions(textsize = "15px"),
             # Popup
-            popup = ~Popup,
+            popup = ~ paste0(
+              Popup,
+              "</p><p>",
+              actionLink(
+                ns("placeholder"),
+                label = "View Details",
+                onclick = paste0(
+                  'Shiny.setInputValue("', ns("to_info"),
+                  '", (Math.random() * 1000) + 1);'
+                )
+              ),
+              "</p>"
+            ),
             # Accessibility
             options = leaflet::markerOptions(
               alt = ~ paste0(Status, ", ", Project)
@@ -118,6 +133,28 @@ mod_map_server <- function(id, df_filter) {
       }
     }) %>%
       bindEvent(df_filter())
+    
+    # Return data ----
+    grant_name <- reactive({
+      project <- input$map_marker_click$id
+      
+      df_temp <- df_raw %>%
+        dplyr::filter(.data$Project == !!project)
+      
+      return(df_temp$Grant)
+    }) %>%
+      bindEvent(input$to_info)
+    
+    return(
+      list(
+        to_info = reactive({
+          input$to_info
+        }),
+        grant_name = reactive({
+          grant_name()
+        })
+      )
+    )
   })
 }
 

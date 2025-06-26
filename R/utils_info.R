@@ -2,8 +2,8 @@
 #'
 #' @description `desc_site()` formats the site description for `mod_info`.
 #'
-#' @param df_grant Dataframe. Should be row from df_raw containing desired
-#' grant.
+#' @param df_grant Dataframe. Should be subset of rows from df_raw that contain
+#' desired grant.
 #'
 #' @return String with HTML formatted description of site.
 #'
@@ -16,95 +16,71 @@ desc_grant <- function(df_grant) {
   }
   
   dat <- df_grant[1,]
+  
+  if (dat$Status == "Complete") {
+    badge <- '<span class="badge bg-primary">Complete</span>'
+  } else {
+    badge <- '<span class="badge bg-secondary">Ongoing</span>'
+  }
+  
+  funding <- ifelse(
+    is.na(dat$Funding_Amount),
+    NA,
+    paste0(
+      "$", 
+      prettyNum(dat$Funding_Amount, big.mark = ",", scientific = FALSE)
+    )
+  )
 
-  # years <- paste(dat$Start_Year, "-", dat$End_Year)
-
-  grant_text <- paste0("<h2>", dat$Grant, "</h2><p>") %>%
-    info_text(
-      c(
-        "Status", "Organization", "Start Year", "End Year", "Funding Source", 
-        "Funding Amount"
-      ),
-      c(
-        dat$Status, dat$Organization, dat$Start_Year, dat$End_Year, 
-        dat$Funding_Source, dat$Funding_Amount
-      )
-    ) %>%
+  grant_text <- badge %>%
+    info_text("Organization", dat$Organization, delim = "<p>") %>%
+    info_text("Start Year", dat$Start_Year) %>%
+    info_text("End Year", dat$End_Year) %>%
+    info_text("Funding", funding, delim = "</p><p>") %>%
+    info_text("Funding Source", dat$Funding_Source) %>%
     paste0("</p>")
-  grant_text <- gsub("<p><br>", "<p>", grant_text)
+  
+  if (!is.na(dat$Report)) {
+    grant_text <- grant_text %>%
+      paste0("<p>", external_link("Read Final Report", dat$Report), "</p>")
+  }
 
   return(grant_text)
 }
 
-#' Generate project description
+#' Generate project descriptions
 #'
-#' @description `desc_project()` formats the project description for `mod_info`.
+#' @description `desc_project()` formats project descriptions for `mod_info`.
 #'
-#' @param project_name Name of project.
-#' @param df_raw Dataframe. Variable included in order to allow testing; should
-#' not be altered during normal use. Default value `df_projects_raw`.
+#' @inheritParams desc_grant
 #'
 #' @return String containing HTML formatted project description.
 #'
 #' @noRd
-desc_project <- function(project_name, df_raw = df_projects_raw) {
-  if (is.na(project_name) || !project_name %in% df_raw$Project_Title) {
-    return("<h2>Unknown Project</h2>")
+desc_project <- function(df_grant) {
+  if (nrow(df_grant) == 0) {
+    return(NULL)
   }
-
-  dat <- df_raw %>%
-    dplyr::filter(.data$Project_Title == !!project_name)
-
-  new_line <- "</p><p><b>in_title:</b> in_data"
-
-  project_text <- paste0(
-    "<h2>", dat$Project_Title, "</h2><h3>Details</h3><p>"
-    ) %>%
-    info_text(
-      c("Status", "Year Started", "Phase"),
-      c(dat$Status, dat$Year_Started, dat$Phase)
-    ) %>%
-    info_text(
-      "Acres Restored",
-      dat$Acres,
-      hide_na = TRUE
-    ) %>%
-    info_text(
-      "Project Lead",
-      dat$Project_Lead,
-      style = new_line
-    ) %>%
-    info_text(
-      "Project Partners",
-      dat$Project_Partners,
-      hide_na = TRUE
-    ) %>%
-    info_text(
-      "Project Type",
-      dat$Project_Type,
-      style = new_line
-    ) %>%
-    info_text(
-      c("Restoration Activities", "Monitoring Focus"),
-      c(dat$Restoration, dat$Monitoring),
-      hide_na = TRUE
-    ) %>%
-    paste0("</p><p>") %>%
-    info_text(
-      c("Funding Amount", "Funding Source"),
-      c(dat$Funding_Amount, dat$Funding_Sources),
-      hide_na = TRUE
-    ) %>%
-    info_text(
-      "Description",
-      dat$Project_Description,
-      hide_na = TRUE,
-      style = new_line
-    ) %>%
-    paste0("</p>")
-  project_text <- gsub("<p><br>", "<p>", project_text)
-  project_text <- gsub("<br></p>", "</p>", project_text)
-  project_text <- gsub("<p></p>", "", project_text)
+  
+  project_text <- paste0("<h2>", df_grant$Grant[1], "</h2>")
+  
+  if (nrow(df_grant) == 1) {
+    project_text <- project_text %>%
+      info_text("Category", df_grant$Category, delim = "<p>") %>%
+      info_text("Description", df_grant$Description, hide_na = TRUE) %>%
+      paste0("</p>")
+  } else {
+    df_temp <- df_grant %>%
+      dplyr::mutate("Popup" = paste0("<h3>", .data$Project, "</h3>")) %>%
+      popup_column("Category", delim = "<p>") %>%
+      popup_column("Description", hide_na = TRUE) %>%
+      dplyr::mutate("Popup" = paste0(.data$Popup, "</p>"))
+    
+    project_text <- paste0(
+      project_text, 
+      paste(df_temp$Popup, collapse="")
+    )
+  }
 
   return(project_text)
 }

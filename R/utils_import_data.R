@@ -54,16 +54,16 @@ format_coordinates <- function(.data, lat_min = -90, lat_max = 90,
   chk <- dat$temp_chk == "missing"
   if (any(chk)) {
     warning(
-      "Missing coordinates. Check rows ",
-      paste(which(chk), collapse = ", "),
+      "Missing coordinates. Check projects:\n\t",
+      paste(dat$Project[which(chk)], collapse = "\n\t"),
       call. = FALSE
     )
   }
   chk <- dat$temp_chk == "invalid"
   if (any(chk)) {
     warning(
-      "Invalid coordinates. Check rows ",
-      paste(which(chk), collapse = ", "),
+      "Invalid coordinates. Check projects:\n\t",
+      paste(dat$Project[which(chk)], collapse = "\n\t"),
       call. = FALSE
     )
   }

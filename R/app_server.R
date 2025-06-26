@@ -29,11 +29,12 @@ app_server <- function(input, output, session) {
   }) %>%
     bindEvent(input$map_tabset, df_filter())
 
-  mod_map_server("map", df_map)
-  mod_table_server("table", df_table)
+  map <- mod_map_server("map", df_map)
+  table <- mod_table_server("table", df_table)
 
   # Info module ----
   init_map <- reactiveVal(FALSE)
+  grant_name <- reactiveVal(df_raw$Grant[1])
   
   observe({
     if (input$main_tabset == "info_tab") {
@@ -42,22 +43,20 @@ app_server <- function(input, output, session) {
   }) %>%
     bindEvent(input$main_tabset, ignoreInit = TRUE)
 
-  info <- mod_info_server("info", project_name, init_map)
+  info <- mod_info_server("info", grant_name, init_map)
   
   # Update tabs, variables -----
-  project_name <- reactiveVal(df_raw$Project[1])
-  
-  # observe({
-  #   project_name(map$site_id())
-  #   bslib::nav_select("main_tabset", "info_tab")
-  # }) %>%
-  #   bindEvent(map$to_info())
+  observe({
+    grant_name(map$grant_name())
+    bslib::nav_select("main_tabset", "info_tab")
+  }) %>%
+    bindEvent(map$to_info())
 
-  # observe({
-  #   project_name(table$button_value())
-  #   bslib::nav_select("main_tabset", "info_tab")
-  # }) %>%
-  #   bindEvent(table$button_click())
+  observe({
+    grant_name(table$button_value())
+    bslib::nav_select("main_tabset", "info_tab")
+  }) %>%
+    bindEvent(table$button_click())
   
   observe({
     bslib::nav_select("main_tabset", "map_tab")

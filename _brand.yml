@@ -26,7 +26,7 @@ color:
   foreground: black
   background: white
   primary: aqua
-  secondary: "#9d9d9d"
+  # secondary: "#9d9d9d"
   success: olive
   info: blue
   warning: sand

@@ -13,32 +13,34 @@ app_ui <- function(request) {
     bslib::page_navbar(
       title = "NBEP Funded Projects",
       id = "main_tabset",
-      sidebar = bslib::sidebar(
-        width = 250,
-        mod_sidebar_ui("sidebar")
-      ),
+      
       # Tab: Map ----
       bslib::nav_panel(
         "Map",
         value = "map_tab",
-        class = "bslib-page-dashboard",
-        bslib::navset_card_tab(
-          id = "map_tabset",
-          height = 450,
-          full_screen = TRUE,
-          bslib::nav_panel(
-            "Map",
-            mod_map_ui("map")
+        bslib::layout_sidebar(
+          sidebar = bslib::sidebar(
+            width = 250,
+            mod_sidebar_ui("sidebar")
           ),
-          bslib::nav_panel(
-            "Table",
-            mod_table_ui("table")
+          class = "bslib-page-dashboard",
+          bslib::navset_card_tab(
+            id = "map_tabset",
+            height = 450,
+            full_screen = TRUE,
+            bslib::nav_panel(
+              "Map",
+              mod_map_ui("map")
+            ),
+            bslib::nav_panel(
+              "Table",
+              mod_table_ui("table")
+            )
           )
         )
       ),
       # Tab: Info ----
-      bslib::nav_panel(
-        "Project Details",
+      bslib::nav_panel_hidden(
         value = "info_tab",
         class = "bslib-page-dashboard",
         mod_info_ui("info")
