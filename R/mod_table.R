@@ -74,7 +74,6 @@ mod_table_server <- function(id, df_filter) {
             style = list(borderRight = "1px solid #eee")
           ),
           "Funding_Amount" = reactable::colDef(
-            name = "Funding",
             format = reactable::colFormat(prefix="$", separators = TRUE)
           ),
           "Description" = reactable::colDef(show = FALSE),

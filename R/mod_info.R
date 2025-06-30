@@ -55,7 +55,7 @@ mod_info_server <- function(id, grant_name, init_map){
     val <- reactiveValues(
       grant = df_raw$Grant[1],
       df_grant = df_raw[0,],
-      df_table = df_raw[0,]
+      df_map = df_raw[0,]
     )
     
     observe({
@@ -68,6 +68,8 @@ mod_info_server <- function(id, grant_name, init_map){
       df_grant <- df_raw %>%
         dplyr::filter(.data$Grant == !!grant)
       val$df_grant <- df_grant
+      val$df_map <- df_grant %>%
+        dplyr::filter(!is.na(.data$Latitude) & !is.na(.data$Longitude))
     }) %>%
       bindEvent(val$grant) 
     
@@ -104,35 +106,43 @@ mod_info_server <- function(id, grant_name, init_map){
 
     observe({
       leaflet::leafletProxy("minimap") %>%
-        leaflet::clearMarkers() %>%
-        leaflet::addMarkers(
-          data = val$df_grant,
-          lng = ~Longitude,
-          lat = ~Latitude,
-          label = ~Project,
-          labelOptions = leaflet::labelOptions(textsize = "15px"),
-          options = leaflet::markerOptions(alt = ~Project)
-        )
+        leaflet::clearMarkers() 
       
-      if (nrow(val$df_grant) == 1) {
+      if (nrow(val$df_map) == 1) {
         # Add single point
         leaflet::leafletProxy("minimap") %>%
+          leaflet::addMarkers(
+            data = val$df_map,
+            lng = ~Longitude,
+            lat = ~Latitude,
+            label = ~Project,
+            labelOptions = leaflet::labelOptions(textsize = "15px"),
+            options = leaflet::markerOptions(alt = ~Project)
+          ) %>%
           leaflet::setView(
-            lng = val$df_grant$Longitude,
-            lat = val$df_grant$Latitude,
+            lng = val$df_map$Longitude,
+            lat = val$df_map$Latitude,
             zoom = 10
           ) 
-      } else if (nrow(val$df_grant) > 1) {
+      } else if (nrow(val$df_map) > 1) {
         # Add multiple points
         leaflet::leafletProxy("minimap") %>%
+          leaflet::addMarkers(
+            data = val$df_map,
+            lng = ~Longitude,
+            lat = ~Latitude,
+            label = ~Project,
+            labelOptions = leaflet::labelOptions(textsize = "15px"),
+            options = leaflet::markerOptions(alt = ~Project)
+          ) %>%
           leaflet::setView(
-            lng = mean(val$df_grant$Longitude),
-            lat = mean(val$df_grant$Latitude),
+            lng = mean(val$df_map$Longitude),
+            lat = mean(val$df_map$Latitude),
             zoom = 8
           ) 
       }
     }) %>%
-      bindEvent(val$df_grant, init_map())
+      bindEvent(val$df_map, init_map())
     
     # Output ----
     return(

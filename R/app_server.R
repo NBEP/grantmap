@@ -60,6 +60,10 @@ app_server <- function(input, output, session) {
   
   observe({
     bslib::nav_select("main_tabset", "map_tab")
+    # Note: line below prevents main page map from crashing when navigate to
+    # info page from table and return to mainpage -- may be able to remove
+    # once leaflet updated to latest javascript version? 
+    bslib::nav_select("map_tabset", "Map")
   }) %>%
     bindEvent(info$to_map())
 }

@@ -3,6 +3,8 @@
 #' @description A shiny Module.
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
+#' @param df_filter Dataframe. Dataframe containing projects to map. Rows
+#' containing invalid coordinates should be removed.
 #'
 #' @noRd
 #'

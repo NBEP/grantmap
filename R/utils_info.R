@@ -12,7 +12,7 @@ desc_grant <- function(df_grant) {
   project_count <- nrow(df_grant)
   
   if (project_count == 0) {
-    return("<h2>Unknown Grant</h2>")
+    return("")
   }
   
   dat <- df_grant[1,]
@@ -59,7 +59,7 @@ desc_grant <- function(df_grant) {
 #' @noRd
 desc_project <- function(df_grant) {
   if (nrow(df_grant) == 0) {
-    return(NULL)
+    return("Error: Unknown Grant")
   }
   
   project_text <- paste0("<h2>", df_grant$Grant[1], "</h2>")

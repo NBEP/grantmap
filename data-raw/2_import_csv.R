@@ -158,7 +158,7 @@ df_raw <- df_raw %>%
   dplyr::mutate("Popup" = gsub("<p><br>", "<p>", .data$Popup)) %>%
   dplyr::select(
     "Grant", "Project", "Organization", "Status", "Start_Year", "End_Year",
-    "Category", "Funding_Amount", "Funding_Source",  "Report", "Description",
+    "Category", "Funding_Source", "Funding_Amount", "Report", "Description",
     "Latitude", "Longitude", "Popup"
   ) %>%
   dplyr::arrange(.data$Grant, .data$Project)
