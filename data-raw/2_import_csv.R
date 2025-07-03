@@ -58,9 +58,10 @@ if (any(!chk)) {
 # Status is ongoing, complete
 chk <- df_grant$Status %in% c("Ongoing", "Complete")
 if (any(!chk)) {
-  stop(
+  warning(
     "Status missing. Check grants:\n\t", 
-    paste(df_grant$Grant[which(chk)], collapse = "\n\t")
+    paste(df_grant$Grant[which(!chk)], collapse = "\n\t"),
+    call. = FALSE
   )
 }
 # Years are valid
