@@ -8,11 +8,11 @@
 A dataframe with 4 columns and 3 rows:
  \describe{
    \item{Study_Area}{The name of the NBEP study area.}
-   \item{DataSource}{The source(s) of the primary data used to produce this 
+   \item{DataSource}{The source(s) of the primary data used to produce this
      dataset.}
-   \item{SourceYear}{The publication year(s) of the primary data used to 
+   \item{SourceYear}{The publication year(s) of the primary data used to
      produce this dataset.}
-   \item{NBEPYear}{The publication year of the NBEP State of Narragansett 
+   \item{NBEPYear}{The publication year of the NBEP State of Narragansett
      Bay & Its Watershed Technical Report associated with this dataset. }
    \item{geometry}{Shapefile geometry}
  }

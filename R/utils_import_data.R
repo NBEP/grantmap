@@ -21,13 +21,13 @@ format_coordinates <- function(.data, lat_min = -90, lat_max = 90,
     stop("Invalid coordinate boundaries")
   }
 
-  dat <- .data %>%
+  dat <- .data |>
     dplyr::mutate(
       dplyr::across(
         c("Latitude", "Longitude"),
         ~ as.numeric(.x)
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "temp_chk" = dplyr::case_when(
         is.na(.data$Latitude) | is.na(.data$Longitude) ~ "missing",
@@ -35,14 +35,14 @@ format_coordinates <- function(.data, lat_min = -90, lat_max = 90,
           .data$Longitude < lon_min | .data$Longitude > lon_max ~ "invalid",
         TRUE ~ "good"
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Latitude" = dplyr::if_else(
         .data$Latitude < -90 | .data$Latitude > 90,
         NA,
         .data$Latitude
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Longitude" = dplyr::if_else(
         .data$Longitude < -180 | .data$Longitude > 180,
@@ -68,9 +68,7 @@ format_coordinates <- function(.data, lat_min = -90, lat_max = 90,
     )
   }
 
-  dat <- dplyr::select(dat, !"temp_chk")
-
-  return(dat)
+  dplyr::select(dat, !"temp_chk")
 }
 
 #' Concatenate town, state
@@ -101,7 +99,7 @@ format_town <- function(.data) {
     warning("State is missing in rows ", paste(which(chk), collapse = ", "))
   }
 
-  dat <- .data %>%
+  dat <- .data |>
     dplyr::mutate(
       "State" = dplyr::case_when(
         .data$State %in% c("RI", "Rhode Island") ~ "RI",
@@ -113,7 +111,7 @@ format_town <- function(.data) {
 
   chk <- unique(dat$State)
   if (length(chk) > 1) {
-    dat <- dat %>%
+    dat <- dat |>
       dplyr::mutate(
         "Town" = dplyr::case_when(
           is.na(.data$State) ~ .data$Town,
@@ -123,9 +121,7 @@ format_town <- function(.data) {
       )
   }
 
-  dat <- dplyr::select(dat, !"State")
-
-  return(dat)
+  dplyr::select(dat, !"State")
 }
 
 #' Check for duplicate values in column

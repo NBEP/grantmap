@@ -67,18 +67,18 @@ mod_sidebar_server <- function(id) {
       req(input$category)
       req(input$funding)
       req(input$year)
-      
+
       org <- gsub("Other", NA, input$org)
       funding <- gsub("Other", NA, input$funding)
 
-      df_filter <- df_raw %>%
+      df_filter <- df_raw |>
         dplyr::filter(
           .data$Status %in% input$status,
           .data$Organization %in% org,
           .data$Funding_Source %in% funding,
           .data$Start_Year >= input$year[1],
           .data$Start_Year <= input$year[2]
-        ) %>%
+        ) |>
         multifilter("Category", input$category)
 
       return(df_filter)

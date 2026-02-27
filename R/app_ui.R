@@ -13,7 +13,7 @@ app_ui <- function(request) {
     bslib::page_navbar(
       title = "NBEP Funded Projects",
       id = "main_tabset",
-      
+
       # Tab: Map ----
       bslib::nav_panel(
         "Map",

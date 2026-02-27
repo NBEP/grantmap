@@ -10,7 +10,7 @@
 #'    \item{Status}{Project status. Options: Ongoing, Complete}
 #'    \item{Start_Year}{Initial funding year}
 #'    \item{End_Year}{Final funding year}
-#'    \item{Category}{Project category. Options: Capacity-Building, Education, 
+#'    \item{Category}{Project category. Options: Capacity-Building, Education,
 #'      Implementation, Monitoring, Outreach, Planning, Research, Restoration}
 #'    \item{Funding_Source}{Funding source. Options: BIL, NEP, SNEP}
 #'    \item{Funding_Amount}{Amount of grant funding (US dollars)}
@@ -29,11 +29,11 @@
 #' @format A dataframe with 4 columns and 3 rows:
 #'  \describe{
 #'    \item{Study_Area}{The name of the NBEP study area.}
-#'    \item{DataSource}{The source(s) of the primary data used to produce this 
+#'    \item{DataSource}{The source(s) of the primary data used to produce this
 #'      dataset.}
-#'    \item{SourceYear}{The publication year(s) of the primary data used to 
+#'    \item{SourceYear}{The publication year(s) of the primary data used to
 #'      produce this dataset.}
-#'    \item{NBEPYear}{The publication year of the NBEP State of Narragansett 
+#'    \item{NBEPYear}{The publication year of the NBEP State of Narragansett
 #'      Bay & Its Watershed Technical Report associated with this dataset. }
 #'    \item{geometry}{Shapefile geometry}
 #'  }

@@ -26,8 +26,9 @@
 #' @return Updated dataframe with column named "Popup" unless `target_col`
 #' set to different value. "Popup" column contains formatted popup text.
 popup_column <- function(
-    .data, col_name, col_title = NULL, target_col = "Popup", na_value = "-",
-    hide_na = FALSE, style = "<b>in_title:</b> in_data", delim = "<br>") {
+  .data, col_name, col_title = NULL, target_col = "Popup", na_value = "-",
+  hide_na = FALSE, style = "<b>in_title:</b> in_data", delim = "<br>"
+) {
   dat <- .data
 
   # Check for errors
@@ -59,7 +60,7 @@ popup_column <- function(
   for (i in names(col_name)) {
     j <- col_name[[i]] # i = col_title, j = col_name
 
-    dat <- dat %>%
+    dat <- dat |>
       dplyr::mutate(
         {{ target_col }} := mapply(
           function(w, x, y) {
@@ -71,7 +72,7 @@ popup_column <- function(
       )
   }
 
-  return(dat)
+  dat
 }
 
 #' Format paired title and value as descriptive text
@@ -101,8 +102,9 @@ popup_column <- function(
 #'
 #' @return Updated string.
 info_text <- function(
-    .data, in_title, in_data, na_value = "-", hide_na = FALSE,
-    style = "<b>in_title:</b> in_data", delim = "<br>") {
+  .data, in_title, in_data, na_value = "-", hide_na = FALSE,
+  style = "<b>in_title:</b> in_data", delim = "<br>"
+) {
   # Check errors
   chk <- length(in_title) == length(in_data)
   chk2 <- grepl("in_title", style) & grepl("in_data", style)
@@ -144,5 +146,5 @@ info_text <- function(
     }
   }
 
-  return(.data)
+  .data
 }

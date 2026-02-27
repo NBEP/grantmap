@@ -36,12 +36,12 @@ mod_table_server <- function(id, df_filter) {
 
     observe({
       df_table$init <- df_filter()
-    }) %>%
+    }) |>
       bindEvent(df_filter(), ignoreInit = TRUE, once = TRUE)
 
     observe({
       df_table$updated <- df_filter()
-    }) %>%
+    }) |>
       bindEvent(df_filter(), ignoreInit = TRUE)
 
     # Render table ----
@@ -53,7 +53,7 @@ mod_table_server <- function(id, df_filter) {
         selection = "single",
         defaultColDef = reactable::colDef(
           header = function(value) {
-            gsub("_", " ", value, fixed = TRUE) %>%
+            gsub("_", " ", value, fixed = TRUE) |>
               stringr::str_to_title()
           },
           headerStyle = list(background = "#f7f7f8")
@@ -74,7 +74,7 @@ mod_table_server <- function(id, df_filter) {
             style = list(borderRight = "1px solid #eee")
           ),
           "Funding_Amount" = reactable::colDef(
-            format = reactable::colFormat(prefix="$", separators = TRUE)
+            format = reactable::colFormat(prefix = "$", separators = TRUE)
           ),
           "Description" = reactable::colDef(show = FALSE),
           "Latitude" = reactable::colDef(show = FALSE),
@@ -88,13 +88,13 @@ mod_table_server <- function(id, df_filter) {
     # Update table
     observe({
       reactable::updateReactable("table", data = df_table$updated)
-    }) %>%
+    }) |>
       bindEvent(df_table$updated)
-  
+
     # Button ----
     table_row <- reactive({
       selected_row <- reactable::getReactableState("table", "selected")
-      
+
       if (isTruthy(selected_row)) {
         row_name <- df_table$updated[selected_row, 1]
         return(paste(row_name))
@@ -102,7 +102,7 @@ mod_table_server <- function(id, df_filter) {
         return("")
       }
     })
-    
+
     observe({
       if (isTruthy(table_row())) {
         updateActionButton(
@@ -122,9 +122,9 @@ mod_table_server <- function(id, df_filter) {
           disabled = TRUE
         )
       }
-    }) %>%
+    }) |>
       bindEvent(table_row(), ignoreInit = TRUE)
-    
+
     # Return data ----
     return(
       list(

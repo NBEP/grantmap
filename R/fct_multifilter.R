@@ -17,18 +17,16 @@
 #' do not meet the selection criteria have been removed, but remaining rows
 #' remain in the same order.
 multifilter <- function(.data, col_name, x, delim = ",") {
-  dat <- .data %>%
+  .data |>
     dplyr::mutate(
       "temp_filter" = mapply(
         function(i) intersect_list(x, i, delim = delim),
         .data[[col_name]],
         SIMPLIFY = FALSE
       )
-    ) %>%
-    dplyr::filter(!is.na(.data$temp_filter)) %>%
+    ) |>
+    dplyr::filter(!is.na(.data$temp_filter)) |>
     dplyr::select(!"temp_filter")
-
-  return(dat)
 }
 
 #' Intersect list and string
@@ -53,5 +51,5 @@ intersect_list <- function(x, y, delim = ",") {
     return(NA)
   }
 
-  return(x)
+  x
 }

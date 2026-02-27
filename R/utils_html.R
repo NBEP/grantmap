@@ -15,13 +15,11 @@ external_link <- function(label, link) {
     stop("Invalid link")
   }
 
-  link_code <- paste0(
+  paste0(
     '<a href="', trimws(link), '" rel="noreferrer" target="_blank">',
     trimws(label),
     '<span class="visually-hidden"> (opens in new tab)</span></a>'
   )
-
-  return(link_code)
 }
 
 #' Add an image link
@@ -44,11 +42,9 @@ image_link <- function(link, image_link, alt, width = "auto", height = "auto") {
     stop("Invalid link")
   }
 
-  image_code <- paste0(
+  paste0(
     '<a href="', trimws(link), '" rel="noreferrer" target="_blank"><img src="',
     trimws(image_link), '" width = "', width, '" height = "', height,
     '" alt = "', trimws(alt), '"></a>'
   )
-
-  return(image_code)
 }

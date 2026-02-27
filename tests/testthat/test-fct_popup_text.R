@@ -39,12 +39,12 @@ test_that("info_text works", {
 
   # Pipes
   expect_equal(
-    "<h1>Suberb Owls</h1>" %>%
+    "<h1>Suberb Owls</h1>" |>
       info_text(
         c("Great Horned Owl", "Saw-whet Owl"),
         c("big", "small"),
         style = "<b>in_title:</b> it is in_data"
-      ) %>%
+      ) |>
       info_text("Barn Owl", "it has a heart-shaped face"),
     "<h1>Suberb Owls</h1><br><b>Great Horned Owl:</b> it is big<br><b>Saw-whet Owl:</b> it is small<br><b>Barn Owl:</b> it has a heart-shaped face"
   )
@@ -89,7 +89,7 @@ test_that("popup_column works", {
 
   # Test complex
   expect_equal(
-    df_in %>%
+    df_in |>
       popup_column(
         col_name = c("Project_Name", "Year"),
         col_title = c("Project", "Start Year"),
@@ -174,8 +174,8 @@ test_that("popup_column accepts pipes", {
 
   # Default settings
   expect_equal(
-    popup_column(df_in, "Project_Name") %>%
-      popup_column("Status") %>%
+    popup_column(df_in, "Project_Name") |>
+      popup_column("Status") |>
       popup_column("Year"),
     data.frame(
       "Project_Name" = c("foo", "bar"),

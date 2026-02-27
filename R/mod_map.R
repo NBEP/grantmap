@@ -24,7 +24,7 @@ mod_map_ui <- function(id) {
 mod_map_server <- function(id, df_filter) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    
+
     # Icons ----
     icon_color <- c("#fde725", "#35b779")
     icon_shape <- c("circle", "rect")
@@ -46,11 +46,11 @@ mod_map_server <- function(id, df_filter) {
     # Leaflet basemap ----
     output$map <- leaflet::renderLeaflet({
       leaflet::leaflet(
-        options = leaflet::leafletOptions(attributionControl = F)
-      ) %>%
+        options = leaflet::leafletOptions(attributionControl = FALSE)
+      ) |>
         leaflet::addProviderTiles(
           leaflet::providers$Esri.WorldTopoMap
-        ) %>%
+        ) |>
         leaflet::addPolygons(
           data = shp_nbep,
           layerId = shp_nbep,
@@ -64,7 +64,7 @@ mod_map_server <- function(id, df_filter) {
           fillColor = "#9adbe8",
           # Group
           group = "NBEP Study Area"
-        ) %>%
+        ) |>
         # Legend
         leaflegend::addLegendImage(
           images = icon_symbols,
@@ -79,24 +79,24 @@ mod_map_server <- function(id, df_filter) {
           labelStyle = "font-size: 18px;",
           position = "topright",
           group = "Legend"
-        ) %>%
+        ) |>
         # Misc
         leaflet::addLayersControl(
           overlayGroups = c("NBEP Study Area", "Legend"),
           position = "topleft"
-        ) %>%
-        leaflet::addScaleBar(position = "bottomleft") 
+        ) |>
+        leaflet::addScaleBar(position = "bottomleft")
     })
 
     # Add sites ----
     observe({
-      leaflet::leafletProxy("map") %>%
+      leaflet::leafletProxy("map") |>
         # Clear points
-        leaflet::clearMarkers() %>%
+        leaflet::clearMarkers() |>
         leaflet::clearMarkerClusters()
 
       if (nrow(df_filter()) > 0) {
-        leaflet::leafletProxy("map") %>%
+        leaflet::leafletProxy("map") |>
           # Add points
           leaflet::addMarkers(
             data = df_filter(),
@@ -133,20 +133,20 @@ mod_map_server <- function(id, df_filter) {
             )
           )
       }
-    }) %>%
+    }) |>
       bindEvent(df_filter())
-    
+
     # Return data ----
     grant_name <- reactive({
       project <- input$map_marker_click$id
-      
-      df_temp <- df_raw %>%
+
+      df_temp <- df_raw |>
         dplyr::filter(.data$Project == !!project)
-      
+
       return(df_temp$Grant)
-    }) %>%
+    }) |>
       bindEvent(input$to_info)
-    
+
     return(
       list(
         to_info = reactive({

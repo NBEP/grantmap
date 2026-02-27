@@ -19,9 +19,10 @@
 #'
 #' @return A [shinyWidgets::pickerInput()] widget.
 select_dropdown <- function(
-    id, label, choices, choice_names = NULL, sort_choices = TRUE,
-    decreasing = FALSE, add_other = TRUE, multiple = TRUE,
-    max_options = NULL) {
+  id, label, choices, choice_names = NULL, sort_choices = TRUE,
+  decreasing = FALSE, add_other = TRUE, multiple = TRUE,
+  max_options = NULL
+) {
   chk <- length(choices) == length(choice_names)
   if (!chk && !is.null(choice_names)) {
     stop("choices and choice_names must be the same length")
@@ -123,7 +124,7 @@ tidy_list <- function(x, sort_list = TRUE, decreasing = FALSE,
     x <- c(x, "Other")
   }
 
-  return(x)
+  x
 }
 
 #' Wrap text
@@ -150,6 +151,4 @@ wrap_text <- function(x) {
 
   x <- stringr::str_wrap(x, width = 40)
   x <- stringr::str_replace_all(x, "\\n", "<br>")
-
-  return(x)
 }

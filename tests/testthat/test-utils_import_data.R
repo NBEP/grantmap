@@ -42,7 +42,7 @@ test_that("format_coordinates error messages", {
   )
 
   expect_error(
-    missing_coord %>% format_coordinates(lat_min = 95),
+    missing_coord |> format_coordinates(lat_min = 95),
     regexp = "Invalid coordinate boundaries"
   )
 
@@ -127,7 +127,7 @@ test_that("chk_unique works", {
 
   # Normal conditions
   expect_no_condition(
-    df_test %>% chk_unique("foo")
+    df_test |> chk_unique("foo")
   )
 
   expect_error(
@@ -142,10 +142,10 @@ test_that("chk_unique works", {
   )
 
   expect_no_condition(
-    df_test %>% chk_unique("banana", ignore_na = TRUE)
+    df_test |> chk_unique("banana", ignore_na = TRUE)
   )
 
   expect_no_condition(
-    df_test %>% chk_unique("bananana", ignore_na = TRUE)
+    df_test |> chk_unique("bananana", ignore_na = TRUE)
   )
 })

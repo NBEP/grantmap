@@ -18,10 +18,8 @@
 ## install.packages('attachment') # if needed.
 attachment::att_amend_desc()
 
-usethis::use_import_from("magrittr", "%>%")
 usethis::use_import_from("data.table", ":=")
 usethis::use_import_from("rlang", ".data")
-usethis::use_import_from("stats", "setNames")
 
 ## Add modules ----
 ## Create a module infrastructure in R/

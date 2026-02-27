@@ -13,7 +13,7 @@ A dataframe with 14 columns:
    \item{Status}{Project status. Options: Ongoing, Complete}
    \item{Start_Year}{Initial funding year}
    \item{End_Year}{Final funding year}
-   \item{Category}{Project category. Options: Capacity-Building, Education, 
+   \item{Category}{Project category. Options: Capacity-Building, Education,
      Implementation, Monitoring, Outreach, Planning, Research, Restoration}
    \item{Funding_Source}{Funding source. Options: BIL, NEP, SNEP}
    \item{Funding_Amount}{Amount of grant funding (US dollars)}
