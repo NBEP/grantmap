@@ -78,13 +78,15 @@ mod_info_server <- function(id, grant_name, init_map) {
       HTML(
         desc_grant(val$df_grant)
       )
-    })
+    }) |>
+      bindCache(val$df_grant, Sys.Date())
 
     output$project_text <- renderUI({
       HTML(
         desc_project(val$df_grant)
       )
-    })
+    }) |>
+      bindCache(val$df_grant, Sys.Date())
 
     # Update tabs -----
     observe({

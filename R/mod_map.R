@@ -143,7 +143,7 @@ mod_map_server <- function(id, df_filter) {
       df_temp <- df_raw |>
         dplyr::filter(.data$Project == !!project)
 
-      return(df_temp$Grant)
+      df_temp$Grant
     }) |>
       bindEvent(input$to_info)
 

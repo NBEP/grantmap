@@ -71,7 +71,7 @@ mod_sidebar_server <- function(id) {
       org <- gsub("Other", NA, input$org)
       funding <- gsub("Other", NA, input$funding)
 
-      df_filter <- df_raw |>
+      df_raw |>
         dplyr::filter(
           .data$Status %in% input$status,
           .data$Organization %in% org,
@@ -80,8 +80,6 @@ mod_sidebar_server <- function(id) {
           .data$Start_Year <= input$year[2]
         ) |>
         multifilter("Category", input$category)
-
-      return(df_filter)
     })
 
     # Output reactive values ----
